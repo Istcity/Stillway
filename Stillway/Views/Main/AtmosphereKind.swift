@@ -8,19 +8,27 @@ enum AtmosphereKind: String, Codable, CaseIterable, Sendable {
     case stream
     case mist
     case ember
+    case snow
+    case prism
 
     static func resolve(soundID: String?, context: AppContext) -> AtmosphereKind {
         switch soundID {
-        case "tokyo_rain", "rain_window":
-            return .rain
-        case "night_forest", "temple_bell", "minka_library":
+        case "silent_snow", "minka_library":
+            return .snow
+        case "healing_528hz", "sacred_om", "autumn_432hz":
+            return .prism
+        case "aurora_ocean", "night_forest", "moonlit_dunes":
             return .aurora
-        case "istanbul_ferry", "kyoto_bamboo":
+        case "tokyo_rain", "rain_window", "greenhouse_rain", "tin_roof_rain":
+            return .rain
+        case "istanbul_ferry", "kyoto_bamboo", "mossy_waterfall", "gong_bath":
             return .stream
         case "deep_train", "shinkansen", "tokyo_metro", "paris_metro":
             return .lava
-        case "night_cafe":
+        case "night_cafe", "hygge_night":
             return .ember
+        case "study_cat":
+            return .mist
         default:
             break
         }
@@ -28,7 +36,8 @@ enum AtmosphereKind: String, Codable, CaseIterable, Sendable {
         case .sleep: return .aurora
         case .focus: return .mist
         case .commute: return .lava
-        case .reset, .walking: return .stream
+        case .reset: return .stream
+        case .walking: return .prism
         case .deepWork: return .ember
         case .unknown: return .mist
         }
@@ -42,6 +51,8 @@ enum AtmosphereKind: String, Codable, CaseIterable, Sendable {
         case .stream: return "water.waves"
         case .mist: return "aqi.medium"
         case .ember: return "sun.haze.fill"
+        case .snow: return "snowflake"
+        case .prism: return "rainbow"
         }
     }
 }

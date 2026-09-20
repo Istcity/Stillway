@@ -4,7 +4,7 @@ import CoreMotion
 import UserNotifications
 import Observation
 
-/// One-shot startup permission priming. Remembers what was asked in UserPreferences.
+/// One-shot startup permission priming. Remembers what was asked in UserDefaults & UserPreferences.
 @MainActor
 enum PermissionBootstrap {
     struct Snapshot: Sendable {
@@ -23,15 +23,26 @@ enum PermissionBootstrap {
         )
     }
 
-    /// Request every permission Stillway needs and persist that we asked.
+    /// Request every permission Stillway needs upfront once and persist permanently into memory.
     static func requestAll(
         location: LocationManager,
         motion: MotionClassifier,
         preferences: UserPreferences?,
         save: () -> Void
     ) async {
+        // If already requested at startup and recorded in memory, avoid re-prompting
+        if StillwayMemory.permissionsRequested, preferences?.didRequestLocationPermission == true {
+            motion.start()
+            return
+        }
+
+        // Mark in memory immediately so repeated launches never trigger popups
+        StillwayMemory.permissionsRequested = true
+
         guard let preferences else {
             location.requestWhenInUse()
+            try? await Task.sleep(for: .milliseconds(400))
+            location.requestAlwaysAuthorization()
             motion.start()
             _ = try? await UNUserNotificationCenter.current()
                 .requestAuthorization(options: [.alert, .sound, .badge])
@@ -40,8 +51,7 @@ enum PermissionBootstrap {
 
         if !preferences.didRequestLocationPermission {
             location.requestWhenInUse()
-            // Upgrade path: Always is required for geofence / visit / background commute.
-            try? await Task.sleep(for: .milliseconds(600))
+            try? await Task.sleep(for: .milliseconds(400))
             location.requestAlwaysAuthorization()
             preferences.didRequestLocationPermission = true
             preferences.locationPermissionRequestedAt = Date()

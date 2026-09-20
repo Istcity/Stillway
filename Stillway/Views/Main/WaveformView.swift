@@ -21,6 +21,19 @@ struct WaveformView: View {
             TimelineView(.periodic(from: .now, by: 1.0 / 16.0)) { timeline in
                 Canvas { context, size in
                     let t = timeline.date.timeIntervalSinceReferenceDate
+
+                    // Luminous atmospheric horizon beam across center (matching build 17 screenshots)
+                    let barH: CGFloat = 26.0
+                    let barY = size.height * 0.5 - barH * 0.5
+                    let barRect = CGRect(x: 16, y: barY, width: size.width - 32, height: barH)
+                    var barCtx = context
+                    barCtx.addFilter(.blur(radius: 14))
+                    barCtx.blendMode = .plusLighter
+                    let barGrad = Gradient(colors: colors.map { $0.opacity(0.72 * energy) })
+                    barCtx.fill(
+                        Path(roundedRect: barRect, cornerRadius: 13),
+                        with: .linearGradient(barGrad, startPoint: CGPoint(x: 0, y: barY), endPoint: CGPoint(x: size.width, y: barY))
+                    )
                     let layers = max(1, config.layerCount)
                     for layer in 0..<layers {
                         var path = Path()

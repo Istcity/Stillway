@@ -5,7 +5,7 @@ struct HomeScreenWidget: Widget {
     let kind = "StillwayHomeScreen"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "HomeScreenWidget", provider: StillwayTimelineProvider()) { entry in
+        StaticConfiguration(kind: kind, provider: StillwayTimelineProvider()) { entry in
             HomeScreenWidgetView(entry: entry)
                 .containerBackground(for: .widget) {
                     LinearGradient(

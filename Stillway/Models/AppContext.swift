@@ -32,8 +32,8 @@ enum AppContext: Int, Codable, Comparable, CaseIterable, Identifiable, Sendable 
         case .commute: return "tokyo_metro"
         case .focus: return "tokyo_rain"
         case .sleep: return "night_forest"
-        case .reset: return "kyoto_bamboo"
-        case .walking: return "rain_window"
+        case .reset: return "rain_window"
+        case .walking: return "kyoto_bamboo"
         case .deepWork: return "deep_train"
         case .unknown: return "tokyo_rain"
         }

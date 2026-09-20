@@ -6,17 +6,18 @@ import SwiftUI
 @MainActor
 final class ThemeEngine {
     /// Logical context after the latest request.
-    var currentContext: AppContext = .unknown
+    var currentContext: AppContext = .focus
+    var currentSoundID: String? = nil
     var isTransitioning = false
     /// 0 = outgoing palette, 1 = incoming. Animates for soft theme morphs.
     var blendProgress: Double = 1
     /// Kept near 1 — no hard collapse/flip on theme change.
     var transitionAmplitude: Double = 1
 
-    private var fromGradient: ContextGradient = ContextGradient.gradient(for: .unknown)
-    private var toGradient: ContextGradient = ContextGradient.gradient(for: .unknown)
-    private var fromWave: WaveConfig = WaveConfig.config(for: .unknown)
-    private var toWave: WaveConfig = WaveConfig.config(for: .unknown)
+    private var fromGradient: ContextGradient = ContextGradient.gradient(for: .focus)
+    private var toGradient: ContextGradient = ContextGradient.gradient(for: .focus)
+    private var fromWave: WaveConfig = WaveConfig.config(for: .focus)
+    private var toWave: WaveConfig = WaveConfig.config(for: .focus)
     private var transitionTask: Task<Void, Never>?
 
     var displayedContext: AppContext { currentContext }
@@ -35,10 +36,17 @@ final class ThemeEngine {
     /// Soft theme morph — weather-like palette shift (peak theme work).
     static let morphDuration: TimeInterval = 4.8
 
-    func apply(context: AppContext) {
-        guard context != currentContext || blendProgress < 0.999 else { return }
+    func apply(soundID: String? = nil, context: AppContext) {
+        let soundChanged = soundID != nil && soundID != currentSoundID
+        let contextChanged = context != currentContext
+        currentSoundID = soundID
+        guard contextChanged || soundChanged || blendProgress < 0.999 else { return }
         transitionTask?.cancel()
-        transitionTask = Task { await transition(to: context) }
+        transitionTask = Task { await transition(to: context, soundID: soundID) }
+    }
+
+    func apply(context: AppContext) {
+        apply(soundID: currentSoundID, context: context)
     }
 
     func apply(_ context: AppContext) {
@@ -60,12 +68,12 @@ final class ThemeEngine {
         isTransitioning = false
     }
 
-    func transition(to context: AppContext) async {
+    func transition(to context: AppContext, soundID: String? = nil) async {
         let visualGradient = gradient
         let visualWave = waveConfig
         fromGradient = visualGradient
         fromWave = visualWave
-        toGradient = ContextGradient.gradient(for: context)
+        toGradient = ContextGradient.gradient(for: soundID ?? currentSoundID, context: context)
         toWave = WaveConfig.config(for: context)
         currentContext = context
         blendProgress = 0

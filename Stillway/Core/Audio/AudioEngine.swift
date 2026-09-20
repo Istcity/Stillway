@@ -1,3 +1,4 @@
+import MediaPlayer
 @preconcurrency import AVFoundation
 import Foundation
 import Observation
@@ -9,6 +10,14 @@ enum JourneyPhase: String, Sendable {
     case slowReset
 }
 
+private final class BinauralSynthState: @unchecked Sendable {
+    var carrierHz: Double = 216.0
+    var beatHz: Double = 0.0
+    var isMuted: Bool = true
+    var leftPhase: Double = 0.0
+    var rightPhase: Double = 0.0
+}
+
 @Observable
 @MainActor
 final class AudioEngine {
@@ -16,8 +25,11 @@ final class AudioEngine {
     private let masterMixer = AVAudioMixerNode()
     private let primaryMixer = AVAudioMixerNode()
     private let secondaryMixer = AVAudioMixerNode()
+    private let binauralMixer = AVAudioMixerNode()
     private let primaryPlayer = AVAudioPlayerNode()
     private let secondaryPlayer = AVAudioPlayerNode()
+    private var binauralSourceNode: AVAudioSourceNode?
+    private let synthState = BinauralSynthState()
 
     private(set) var isPlaying = false
     /// True when the last scheduled bed came from a bundled audio file (not procedural noise).
@@ -39,6 +51,15 @@ final class AudioEngine {
 
     func setBinauralTone(_ value: BinauralTone) {
         binauralTone = value
+        synthState.beatHz = value.beatHz
+        synthState.isMuted = (value == .off)
+        fadeTask?.cancel()
+        if value == .off {
+            fadeTask = Task { await fadeAsync(to: 0, on: binauralMixer, duration: 0.8) }
+        } else {
+            startEngineIfNeeded()
+            fadeTask = Task { await fadeAsync(to: 0.45, on: binauralMixer, duration: 1.2) }
+        }
     }
 
     var isHeadphonesConnected: Bool { headphonesConnected }
@@ -57,6 +78,7 @@ final class AudioEngine {
         observeRouteChanges()
         observeInterruptions()
         refreshHeadphones()
+        setupRemoteCommandCenter()
     }
 
     func play(sound: Sound, fadeDuration: Double = 1.5) {
@@ -64,11 +86,27 @@ final class AudioEngine {
         schedule(player: primaryPlayer, sound: sound)
         startEngineIfNeeded()
         primaryPlayer.play()
+        if let sec = secondarySound {
+            schedule(player: secondaryPlayer, sound: sec)
+            secondaryPlayer.play()
+        }
         isPlaying = true
         sessionStart = Date()
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        updateNowPlayingInfo()
         journeyPhase = .arrival
         fadeTask?.cancel()
-        fadeTask = Task { await fadeAsync(to: primaryVolume, on: primaryMixer, duration: fadeDuration) }
+        fadeTask = Task {
+            await fadeAsync(to: primaryVolume, on: primaryMixer, duration: fadeDuration)
+            if secondarySound != nil {
+                await fadeAsync(to: secondaryVolume, on: secondaryMixer, duration: fadeDuration)
+            }
+            if binauralTone != .off {
+                await fadeAsync(to: 0.45, on: binauralMixer, duration: fadeDuration)
+            }
+        }
         HapticEngine.success()
     }
 
@@ -77,13 +115,20 @@ final class AudioEngine {
         schedule(player: secondaryPlayer, sound: sound)
         startEngineIfNeeded()
         secondaryPlayer.play()
-        secondaryMixer.outputVolume = secondaryVolume
+        fadeTask?.cancel()
+        fadeTask = Task {
+            await fadeAsync(to: secondaryVolume, on: secondaryMixer, duration: 1.5)
+        }
     }
 
     func stopSecondary() {
-        secondaryPlayer.stop()
-        secondarySound = nil
-        secondaryMixer.outputVolume = 0
+        fadeTask?.cancel()
+        fadeTask = Task { [weak self] in
+            guard let self else { return }
+            await self.fadeAsync(to: 0, on: self.secondaryMixer, duration: 1.0)
+            self.secondaryPlayer.stop()
+            self.secondarySound = nil
+        }
     }
 
     func stop(fadeDuration: Double = 2.0) {
@@ -93,11 +138,19 @@ final class AudioEngine {
             guard let self else { return }
             await self.fadeAsync(to: 0, on: self.primaryMixer, duration: fadeDuration)
             await self.fadeAsync(to: 0, on: self.secondaryMixer, duration: fadeDuration)
+            await self.fadeAsync(to: 0, on: self.binauralMixer, duration: fadeDuration)
             self.primaryPlayer.stop()
             self.secondaryPlayer.stop()
             self.isPlaying = false
+            if let start = self.sessionStart {
+                HealthKitManager.shared.saveMindfulSession(startDate: start, endDate: Date())
+            }
             self.sessionStart = nil
             self.journeyPhase = .idle
+            self.clearNowPlayingInfo()
+            DispatchQueue.main.async {
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
             HapticEngine.soft()
         }
     }
@@ -153,7 +206,8 @@ final class AudioEngine {
             let tail = Float((progress - 0.85) / 0.15)
             masterMixer.outputVolume = max(0.3, 1.0 - tail * 0.7)
             if progress >= 1 {
-                stop(fadeDuration: 2.0)
+                playCompletionChime()
+                stop(fadeDuration: 3.0)
             }
         }
     }
@@ -168,16 +222,66 @@ final class AudioEngine {
         engine.attach(secondaryPlayer)
         engine.attach(primaryMixer)
         engine.attach(secondaryMixer)
+        engine.attach(binauralMixer)
         engine.attach(masterMixer)
-        // Fixed graph format — every bed is converted into this before scheduling.
+
         let format = Self.playbackFormat
         engine.connect(primaryPlayer, to: primaryMixer, format: format)
         engine.connect(secondaryPlayer, to: secondaryMixer, format: format)
+
+        let synth = self.synthState
+        let sampleRate = format.sampleRate
+        let sourceNode = AVAudioSourceNode { _, _, frameCount, audioBufferList -> OSStatus in
+            let abl = UnsafeMutableAudioBufferListPointer(audioBufferList)
+            guard abl.count >= 2,
+                  let leftPtr = abl[0].mData?.assumingMemoryBound(to: Float.self),
+                  let rightPtr = abl[1].mData?.assumingMemoryBound(to: Float.self) else {
+                return noErr
+            }
+
+            if synth.isMuted || synth.beatHz <= 0 {
+                memset(leftPtr, 0, Int(frameCount) * MemoryLayout<Float>.size)
+                memset(rightPtr, 0, Int(frameCount) * MemoryLayout<Float>.size)
+                return noErr
+            }
+
+            let carrier = synth.carrierHz
+            let beat = synth.beatHz
+            let leftFreq = carrier
+            let rightFreq = carrier + beat
+            let twoPi = 2.0 * Double.pi
+            let leftDelta = (twoPi * leftFreq) / sampleRate
+            let rightDelta = (twoPi * rightFreq) / sampleRate
+            let amplitude: Float = 0.09
+
+            var lPhase = synth.leftPhase
+            var rPhase = synth.rightPhase
+
+            for i in 0..<Int(frameCount) {
+                leftPtr[i] = Float(sin(lPhase)) * amplitude
+                rightPtr[i] = Float(sin(rPhase)) * amplitude
+                lPhase += leftDelta
+                if lPhase >= twoPi { lPhase -= twoPi }
+                rPhase += rightDelta
+                if rPhase >= twoPi { rPhase -= twoPi }
+            }
+
+            synth.leftPhase = lPhase
+            synth.rightPhase = rPhase
+            return noErr
+        }
+        binauralSourceNode = sourceNode
+        engine.attach(sourceNode)
+        engine.connect(sourceNode, to: binauralMixer, format: format)
+
         engine.connect(primaryMixer, to: masterMixer, format: format)
         engine.connect(secondaryMixer, to: masterMixer, format: format)
+        engine.connect(binauralMixer, to: masterMixer, format: format)
         engine.connect(masterMixer, to: engine.mainMixerNode, format: format)
+
         primaryMixer.outputVolume = primaryVolume
         secondaryMixer.outputVolume = 0
+        binauralMixer.outputVolume = 0
         masterMixer.outputVolume = 1
     }
 
@@ -421,6 +525,80 @@ final class AudioEngine {
         let outputs = AVAudioSession.sharedInstance().currentRoute.outputs
         headphonesConnected = outputs.contains {
             [.headphones, .bluetoothA2DP, .bluetoothHFP, .bluetoothLE].contains($0.portType)
+        }
+    }
+
+    // MARK: - Remote Media Center & Now Playing
+
+    private func setupRemoteCommandCenter() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.playCommand.isEnabled = true
+        commandCenter.playCommand.addTarget { [weak self] _ in
+            guard let self else { return .commandFailed }
+            if !self.isPlaying {
+                if let sound = self.primarySound ?? Sound.library.first {
+                    self.play(sound: sound)
+                }
+            }
+            return .success
+        }
+
+        commandCenter.pauseCommand.isEnabled = true
+        commandCenter.pauseCommand.addTarget { [weak self] _ in
+            guard let self else { return .commandFailed }
+            if self.isPlaying {
+                self.stop()
+            }
+            return .success
+        }
+
+        commandCenter.togglePlayPauseCommand.isEnabled = true
+        commandCenter.togglePlayPauseCommand.addTarget { [weak self] _ in
+            guard let self else { return .commandFailed }
+            self.toggle()
+            return .success
+        }
+    }
+
+    private func updateNowPlayingInfo() {
+        var info = [String: Any]()
+        if let sound = primarySound {
+            info[MPMediaItemPropertyTitle] = sound.title
+            info[MPMediaItemPropertyArtist] = "Stillway • " + sound.subtitle
+        } else {
+            info[MPMediaItemPropertyTitle] = "Stillway Ambient"
+            info[MPMediaItemPropertyArtist] = "Stillway"
+        }
+        info[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0.0
+        info[MPMediaItemPropertyPlaybackDuration] = sessionDuration > 0 ? sessionDuration : 1800.0
+        info[MPNowPlayingInfoPropertyPlaybackRate] = isPlaying ? 1.0 : 0.0
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+    }
+
+    private func clearNowPlayingInfo() {
+        var info = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
+        info[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+    }
+
+    // MARK: - Session Completion Bell Chime & Tranquil Haptic
+
+    private func playCompletionChime() {
+        DispatchQueue.main.async {
+            let gen = UINotificationFeedbackGenerator()
+            gen.notificationOccurred(.success)
+        }
+        if let chimeURL = Bundle.main.url(forResource: "temple_bell", withExtension: "m4a") ?? Bundle.main.url(forResource: "gong_bath", withExtension: "m4a") {
+            do {
+                let chimeFile = try AVAudioFile(forReading: chimeURL)
+                let chimePlayer = AVAudioPlayerNode()
+                self.engine.attach(chimePlayer)
+                self.engine.connect(chimePlayer, to: self.masterMixer, format: chimeFile.processingFormat)
+                chimePlayer.scheduleFile(chimeFile, at: nil)
+                chimePlayer.play()
+            } catch {
+                // Graceful ignore
+            }
         }
     }
 }

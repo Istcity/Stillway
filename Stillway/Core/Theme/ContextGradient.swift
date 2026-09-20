@@ -1,8 +1,8 @@
 import SwiftUI
-#if canImport(UIKit)
-import UIKit
-#endif
 
+/// Ultra-smooth harmonic color palettes for ambient contexts and sounds.
+/// Features tailored HSL gradients matching screenshots (Emerald transit, Warm golden amber,
+/// Sunny gold, Ocean turquoise, Solfeggio violet, and Polar aurora).
 struct ContextGradient: Equatable, Sendable {
     let bgColors: [Color]
     let waveColors: [Color]
@@ -10,65 +10,159 @@ struct ContextGradient: Equatable, Sendable {
     let glowColor: Color
     let cardTint: Color
 
-    var cardBackground: Color { cardTint }
+    static func gradient(for soundID: String?, context: AppContext) -> ContextGradient {
+        if let soundID {
+            switch soundID {
+            // Emerald Underground / Transit (Screenshot 1 & 4)
+            case "tokyo_metro", "shinkansen", "paris_metro":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x01140E), Color(hex: 0x052B1D), Color(hex: 0x021A11)],
+                    waveColors: [Color(hex: 0x00E676), Color(hex: 0x00B0FF), Color(hex: 0x1DE9B6)],
+                    accentColor: Color(hex: 0x2EE59D),
+                    glowColor: Color(hex: 0x2EE59D).opacity(0.48),
+                    cardTint: Color(hex: 0x052B1D).opacity(0.65)
+                )
+
+            // Warm golden amber (Night Express, Sunset, Autumn Fireplace)
+            case "deep_train", "autumn_432hz", "night_cafe":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x1A0E02), Color(hex: 0x331B05), Color(hex: 0x211203)],
+                    waveColors: [Color(hex: 0xFFA726), Color(hex: 0xFFB300), Color(hex: 0xFF7043)],
+                    accentColor: Color(hex: 0xFFA726),
+                    glowColor: Color(hex: 0xFFA726).opacity(0.48),
+                    cardTint: Color(hex: 0x331B05).opacity(0.65)
+                )
+
+            // Botanical moss & greenhouse rain
+            case "greenhouse_rain", "tin_roof_rain":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x021714), Color(hex: 0x05302A), Color(hex: 0x03211D)],
+                    waveColors: [Color(hex: 0x26A69A), Color(hex: 0x4DB6AC), Color(hex: 0x80CBC4)],
+                    accentColor: Color(hex: 0x26A69A),
+                    glowColor: Color(hex: 0x26A69A).opacity(0.45),
+                    cardTint: Color(hex: 0x05302A).opacity(0.65)
+                )
+
+            // Sunny Gold / Gentle Summer Breeze & Study
+            case "kyoto_bamboo", "study_cat", "minka_library":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x161301), Color(hex: 0x2E2704), Color(hex: 0x1D1902)],
+                    waveColors: [Color(hex: 0xFFD54F), Color(hex: 0xFFCA28), Color(hex: 0xFFE082)],
+                    accentColor: Color(hex: 0xFDD835),
+                    glowColor: Color(hex: 0xFDD835).opacity(0.45),
+                    cardTint: Color(hex: 0x2E2704).opacity(0.65)
+                )
+
+            // Deep ocean turquoise & Bosphorus
+            case "rain_window", "istanbul_ferry", "mossy_waterfall":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x011A21), Color(hex: 0x03303D), Color(hex: 0x021F29)],
+                    waveColors: [Color(hex: 0x00E5FF), Color(hex: 0x00B0FF), Color(hex: 0x26C6DA)],
+                    accentColor: Color(hex: 0x00E5FF),
+                    glowColor: Color(hex: 0x00E5FF).opacity(0.45),
+                    cardTint: Color(hex: 0x03303D).opacity(0.65)
+                )
+
+            // Meditative Solfeggio & Temple bells (Ethereal purple & sacred violet)
+            case "temple_bell", "gong_bath", "sacred_om", "healing_528hz":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x140821), Color(hex: 0x2B1245), Color(hex: 0x1C0C30)],
+                    waveColors: [Color(hex: 0xBA68C8), Color(hex: 0xAB47BC), Color(hex: 0xE1BEE7)],
+                    accentColor: Color(hex: 0xCE93D8),
+                    glowColor: Color(hex: 0xCE93D8).opacity(0.48),
+                    cardTint: Color(hex: 0x2B1245).opacity(0.65)
+                )
+
+            // Cozy Hygge Night (Warm fire embers)
+            case "hygge_night":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x1E0A05), Color(hex: 0x3D160B), Color(hex: 0x270F07)],
+                    waveColors: [Color(hex: 0xFF8A65), Color(hex: 0xFF7043), Color(hex: 0xFFAB91)],
+                    accentColor: Color(hex: 0xFF7043),
+                    glowColor: Color(hex: 0xFF7043).opacity(0.48),
+                    cardTint: Color(hex: 0x3D160B).opacity(0.65)
+                )
+
+            // Polar Aurora & Cosmic Deep Night (Screenshot 4)
+            case "aurora_ocean", "silent_snow", "moonlit_dunes", "night_forest", "tokyo_rain":
+                return ContextGradient(
+                    bgColors: [Color(hex: 0x040817), Color(hex: 0x0B1536), Color(hex: 0x070E24)],
+                    waveColors: [Color(hex: 0x7C4DFF), Color(hex: 0x536DFE), Color(hex: 0x00E5FF)],
+                    accentColor: Color(hex: 0x7C4DFF),
+                    glowColor: Color(hex: 0x7C4DFF).opacity(0.45),
+                    cardTint: Color(hex: 0x0B1536).opacity(0.65)
+                )
+
+            default:
+                break
+            }
+        }
+        return gradient(for: context)
+    }
 
     static func gradient(for context: AppContext) -> ContextGradient {
         switch context {
         case .commute:
+            // Emerald Underground / Transit (Screenshot 1 & 4)
             return ContextGradient(
-                bgColors: [Color(hex: 0x020818), Color(hex: 0x0D1B4D), Color(hex: 0x1B0D4D)],
-                waveColors: [Color(hex: 0x1B3FDB), Color(hex: 0x6B21DB), Color(hex: 0x9B59B6)],
-                accentColor: Color(hex: 0x4169E1),
-                glowColor: Color(hex: 0x1B3FDB).opacity(0.4),
-                cardTint: Color(hex: 0x0D1B4D).opacity(0.6)
+                bgColors: [Color(hex: 0x01140E), Color(hex: 0x052B1D), Color(hex: 0x021A11)],
+                waveColors: [Color(hex: 0x00E676), Color(hex: 0x00B0FF), Color(hex: 0x1DE9B6)],
+                accentColor: Color(hex: 0x2EE59D),
+                glowColor: Color(hex: 0x2EE59D).opacity(0.45),
+                cardTint: Color(hex: 0x052B1D).opacity(0.65)
             )
         case .focus:
+            // Warm Amber Focus (Screenshot 2 & 3)
             return ContextGradient(
-                bgColors: [Color(hex: 0x020C18), Color(hex: 0x041B2D), Color(hex: 0x062040)],
-                waveColors: [Color(hex: 0x0A84FF), Color(hex: 0x0066CC), Color(hex: 0x00B4A0)],
-                accentColor: Color(hex: 0x0A84FF),
-                glowColor: Color(hex: 0x0A84FF).opacity(0.35),
-                cardTint: Color(hex: 0x041B2D).opacity(0.6)
+                bgColors: [Color(hex: 0x1A0E02), Color(hex: 0x331B05), Color(hex: 0x211203)],
+                waveColors: [Color(hex: 0xFFA726), Color(hex: 0xFFB300), Color(hex: 0xFF7043)],
+                accentColor: Color(hex: 0xFFA726),
+                glowColor: Color(hex: 0xFFA726).opacity(0.48),
+                cardTint: Color(hex: 0x331B05).opacity(0.65)
             )
         case .sleep:
+            // Deep Starlight & Cosmic Purple
             return ContextGradient(
-                bgColors: [Color(hex: 0x050010), Color(hex: 0x0F0226), Color(hex: 0x1A0533)],
-                waveColors: [Color(hex: 0x5E5CE6), Color(hex: 0x7C3AED), Color(hex: 0x4C1D95)],
-                accentColor: Color(hex: 0x5E5CE6),
-                glowColor: Color(hex: 0x5E5CE6).opacity(0.35),
-                cardTint: Color(hex: 0x0F0226).opacity(0.65)
+                bgColors: [Color(hex: 0x040817), Color(hex: 0x0B1536), Color(hex: 0x070E24)],
+                waveColors: [Color(hex: 0x7C4DFF), Color(hex: 0x536DFE), Color(hex: 0x00E5FF)],
+                accentColor: Color(hex: 0x7C4DFF),
+                glowColor: Color(hex: 0x7C4DFF).opacity(0.45),
+                cardTint: Color(hex: 0x0B1536).opacity(0.65)
             )
         case .reset:
+            // Ocean Turquoise & Water Breeze
             return ContextGradient(
-                bgColors: [Color(hex: 0x180800), Color(hex: 0x2D1200), Color(hex: 0x3D1A00)],
-                waveColors: [Color(hex: 0xFF9F0A), Color(hex: 0xFF6B35), Color(hex: 0xFF453A)],
-                accentColor: Color(hex: 0xFF9F0A),
-                glowColor: Color(hex: 0xFF9F0A).opacity(0.4),
-                cardTint: Color(hex: 0x2D1200).opacity(0.6)
+                bgColors: [Color(hex: 0x011A21), Color(hex: 0x03303D), Color(hex: 0x021F29)],
+                waveColors: [Color(hex: 0x00E5FF), Color(hex: 0x00B0FF), Color(hex: 0x26C6DA)],
+                accentColor: Color(hex: 0x00E5FF),
+                glowColor: Color(hex: 0x00E5FF).opacity(0.45),
+                cardTint: Color(hex: 0x03303D).opacity(0.65)
             )
         case .walking:
+            // Güneş Saati: Warm Solar Rays & Golden Morning Plasma
             return ContextGradient(
-                bgColors: [Color(hex: 0x001208), Color(hex: 0x002010), Color(hex: 0x003018)],
-                waveColors: [Color(hex: 0x30D158), Color(hex: 0x34C759), Color(hex: 0x00BFB3)],
-                accentColor: Color(hex: 0x30D158),
-                glowColor: Color(hex: 0x30D158).opacity(0.35),
-                cardTint: Color(hex: 0x002010).opacity(0.6)
+                bgColors: [Color(hex: 0x221303), Color(hex: 0x3B2005), Color(hex: 0x1A0D02)],
+                waveColors: [Color(hex: 0xFFD54F), Color(hex: 0xFF9800), Color(hex: 0xFFE082)],
+                accentColor: Color(hex: 0xFFB300),
+                glowColor: Color(hex: 0xFFD54F).opacity(0.50),
+                cardTint: Color(hex: 0x3B2005).opacity(0.65)
             )
         case .deepWork:
+            // Volcanic Crimson & Deep Embers
             return ContextGradient(
-                bgColors: [Color(hex: 0x150000), Color(hex: 0x2D0000), Color(hex: 0x3D0A0A)],
-                waveColors: [Color(hex: 0xFF453A), Color(hex: 0xFF2D20), Color(hex: 0xC0000A)],
-                accentColor: Color(hex: 0xFF453A),
-                glowColor: Color(hex: 0xFF453A).opacity(0.4),
-                cardTint: Color(hex: 0x2D0000).opacity(0.65)
+                bgColors: [Color(hex: 0x1A0505), Color(hex: 0x360808), Color(hex: 0x240505)],
+                waveColors: [Color(hex: 0xFF5252), Color(hex: 0xFF1744), Color(hex: 0xFF7043)],
+                accentColor: Color(hex: 0xFF5252),
+                glowColor: Color(hex: 0xFF5252).opacity(0.45),
+                cardTint: Color(hex: 0x360808).opacity(0.65)
             )
         case .unknown:
             return ContextGradient(
-                bgColors: [Color(hex: 0x050505), Color(hex: 0x0A0A0A), Color(hex: 0x111111)],
-                waveColors: [Color(hex: 0x48484A), Color(hex: 0x636366), Color(hex: 0x48484A)],
-                accentColor: Color(hex: 0x8A8A8E),
-                glowColor: Color(hex: 0x8A8A8E).opacity(0.25),
-                cardTint: Color(hex: 0x1C1C1E).opacity(0.6)
+                bgColors: [Color(hex: 0x050505), Color(hex: 0x0E0E12), Color(hex: 0x08080A)],
+                waveColors: [Color(hex: 0x64B5F6), Color(hex: 0x81D4FA), Color(hex: 0x4DD0E1)],
+                accentColor: Color(hex: 0x64B5F6),
+                glowColor: Color(hex: 0x64B5F6).opacity(0.35),
+                cardTint: Color(hex: 0x121217).opacity(0.65)
             )
         }
     }
@@ -77,7 +171,6 @@ struct ContextGradient: Equatable, Sendable {
         gradient(for: context)
     }
 
-    /// Soft crossfade between two theme palettes (t = 0...1).
     static func blended(from: ContextGradient, to: ContextGradient, t: Double) -> ContextGradient {
         let t = min(1, max(0, t))
         if t <= 0.001 { return from }
@@ -105,18 +198,6 @@ extension Color {
         let g = Double((hex >> 8) & 0xFF) / 255
         let b = Double(hex & 0xFF) / 255
         self.init(.sRGB, red: r, green: g, blue: b, opacity: opacity)
-    }
-
-    init(hexString: String) {
-        var hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        if hex.count == 6 { hex = "FF" + hex }
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a = Double((int >> 24) & 0xFF) / 255
-        let r = Double((int >> 16) & 0xFF) / 255
-        let g = Double((int >> 8) & 0xFF) / 255
-        let b = Double(int & 0xFF) / 255
-        self.init(.sRGB, red: r, green: g, blue: b, opacity: a)
     }
 
     func mix(with other: Color, t: Double) -> Color {

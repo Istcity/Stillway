@@ -3,6 +3,7 @@ import SwiftData
 
 struct ContentRootView: View {
     @Environment(ContextEngine.self) private var runtime
+    @Environment(ThemeEngine.self) private var theme
     @Environment(\.lm) private var lm
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.modelContext) private var modelContext
@@ -23,21 +24,6 @@ struct ContentRootView: View {
             }
         }
         .animation(reduceMotion ? .none : .easeInOut(duration: 1.0), value: hasCompletedOnboarding)
-        .sheet(isPresented: Bindable(runtime).showSettings) {
-            SettingsSheet()
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: Bindable(runtime).showPlaces) {
-            PlacesSheet()
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: Bindable(runtime).showSounds) {
-            SoundPickerSheet()
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-        }
         .sheet(isPresented: Bindable(runtime).showPlaceLabel) {
             PlaceLabelSheet()
                 .presentationDetents([.medium])
@@ -49,6 +35,11 @@ struct ContentRootView: View {
         .onAppear {
             reconcileOnboardingFlag()
             consumePendingToggle()
+            if !StillwayMemory.permissionsRequested {
+                Task {
+                    await runtime.requestStartupPermissions()
+                }
+            }
         }
     }
 
@@ -73,6 +64,18 @@ struct ContentRootView: View {
             runtime.showPlaces = true
         case "settings":
             runtime.showSettings = true
+        case "context":
+            if let raw = url.pathComponents.dropFirst().first, let ctx = AppContext.allCases.first(where: { "\($0)".lowercased() == raw.lowercased() }) {
+                theme.apply(context: ctx)
+                if let s = Sound.sounds(for: ctx).first {
+                    runtime.selectSound(s, isPro: true, preferences: prefs.first)
+                }
+            }
+        case "sound":
+            if let soundId = url.pathComponents.dropFirst().first, let s = Sound.library.first(where: { $0.id == soundId }) {
+                theme.apply(soundID: s.id, context: s.context)
+                runtime.selectSound(s, isPro: true, preferences: prefs.first)
+            }
         default:
             break
         }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000000000000000000B16AD1 /* SoundCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000B1F888 /* SoundCarouselView.swift */; };
+		000000000000000000B1AF24 /* VerticalTimerTube.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000B16E0E /* VerticalTimerTube.swift */; };
 		000000000000000000A10002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10001 /* AppDelegate.swift */; };
 		000000000000000000A10004 /* StillwayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10003 /* StillwayApp.swift */; };
 		000000000000000000A10006 /* CustomBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10005 /* CustomBottomSheet.swift */; };
@@ -16,9 +18,6 @@
 		000000000000000000A1000E /* PulsingDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1000D /* PulsingDot.swift */; };
 		000000000000000000A10010 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1000F /* AudioEngine.swift */; };
 		000000000000000000A10012 /* ContextEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10011 /* ContextEngine.swift */; };
-		000000000000000000A100F4 /* PermissionBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F3 /* PermissionBootstrap.swift */; };
-		000000000000000000A100F6 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F5 /* NotificationScheduler.swift */; };
-		000000000000000000A100F8 /* TrainHeuristicClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F7 /* TrainHeuristicClassifier.swift */; };
 		000000000000000000A10014 /* ContextTransitionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10013 /* ContextTransitionEngine.swift */; };
 		000000000000000000A10016 /* MotionClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10015 /* MotionClassifier.swift */; };
 		000000000000000000A10018 /* SleepDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10017 /* SleepDetector.swift */; };
@@ -31,7 +30,6 @@
 		000000000000000000A10026 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10025 /* LocationManager.swift */; };
 		000000000000000000A10028 /* StationDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10027 /* StationDatabase.swift */; };
 		000000000000000000A1002A /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10029 /* PurchaseManager.swift */; };
-		000000000000000000A100C2 /* StillwayTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100C1 /* StillwayTesting.swift */; };
 		000000000000000000A1002C /* ContextGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1002B /* ContextGradient.swift */; };
 		000000000000000000A1002E /* ThemeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1002D /* ThemeEngine.swift */; };
 		000000000000000000A10030 /* WaveConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1002F /* WaveConfig.swift */; };
@@ -47,8 +45,6 @@
 		000000000000000000A10044 /* ContextBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10043 /* ContextBadge.swift */; };
 		000000000000000000A10046 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10045 /* MainView.swift */; };
 		000000000000000000A10048 /* MeshBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10047 /* MeshBackgroundView.swift */; };
-		000000000000000000A100D2 /* AtmosphereView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100D1 /* AtmosphereView.swift */; };
-		000000000000000000A100D4 /* AtmosphereKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100D3 /* AtmosphereKind.swift */; };
 		000000000000000000A1004A /* SoundMixerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10049 /* SoundMixerRow.swift */; };
 		000000000000000000A1004C /* StartStopButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1004B /* StartStopButton.swift */; };
 		000000000000000000A1004E /* TimerRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1004D /* TimerRing.swift */; };
@@ -71,12 +67,18 @@
 		000000000000000000A10070 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1006F /* Localizable.xcstrings */; };
 		000000000000000000A10072 /* stations.json in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10071 /* stations.json */; };
 		000000000000000000A10074 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10073 /* PrivacyInfo.xcprivacy */; };
-		000000000000000000A100E1 /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100E0 /* Sounds */; };
 		000000000000000000A10076 /* tr.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10075 /* tr.lproj */; };
 		000000000000000000A10078 /* ja.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10077 /* ja.lproj */; };
 		000000000000000000A1007A /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10079 /* en.lproj */; };
 		000000000000000000A1007C /* fr.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1007B /* fr.lproj */; };
 		000000000000000000A10086 /* StillwayWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10082 /* StillwayWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		000000000000000000A100C2 /* StillwayTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100C1 /* StillwayTesting.swift */; };
+		000000000000000000A100D2 /* AtmosphereView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100D1 /* AtmosphereView.swift */; };
+		000000000000000000A100D4 /* AtmosphereKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100D3 /* AtmosphereKind.swift */; };
+		000000000000000000A100E1 /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100E0 /* Sounds */; };
+		000000000000000000A100F4 /* PermissionBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F3 /* PermissionBootstrap.swift */; };
+		000000000000000000A100F6 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F5 /* NotificationScheduler.swift */; };
+		000000000000000000A100F8 /* TrainHeuristicClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F7 /* TrainHeuristicClassifier.swift */; };
 		000000000000000000A100FA /* StillwayMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A100F9 /* StillwayMemory.swift */; };
 		000000000000000000A10111 /* TimerFaceKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10110 /* TimerFaceKind.swift */; };
 		000000000000000000A10113 /* TimerFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10112 /* TimerFaceView.swift */; };
@@ -107,6 +109,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		000000000000000000B1F888 /* SoundCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCarouselView.swift; sourceTree = "<group>"; };
+		000000000000000000B16E0E /* VerticalTimerTube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalTimerTube.swift; sourceTree = "<group>"; };
 		000000000000000000A10001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		000000000000000000A10003 /* StillwayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillwayApp.swift; sourceTree = "<group>"; };
 		000000000000000000A10005 /* CustomBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBottomSheet.swift; sourceTree = "<group>"; };
@@ -116,9 +120,6 @@
 		000000000000000000A1000D /* PulsingDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulsingDot.swift; sourceTree = "<group>"; };
 		000000000000000000A1000F /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		000000000000000000A10011 /* ContextEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextEngine.swift; sourceTree = "<group>"; };
-		000000000000000000A100F3 /* PermissionBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionBootstrap.swift; sourceTree = "<group>"; };
-		000000000000000000A100F5 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
-		000000000000000000A100F7 /* TrainHeuristicClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainHeuristicClassifier.swift; sourceTree = "<group>"; };
 		000000000000000000A10013 /* ContextTransitionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextTransitionEngine.swift; sourceTree = "<group>"; };
 		000000000000000000A10015 /* MotionClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionClassifier.swift; sourceTree = "<group>"; };
 		000000000000000000A10017 /* SleepDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepDetector.swift; sourceTree = "<group>"; };
@@ -131,7 +132,6 @@
 		000000000000000000A10025 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		000000000000000000A10027 /* StationDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDatabase.swift; sourceTree = "<group>"; };
 		000000000000000000A10029 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
-		000000000000000000A100C1 /* StillwayTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillwayTesting.swift; sourceTree = "<group>"; };
 		000000000000000000A1002B /* ContextGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextGradient.swift; sourceTree = "<group>"; };
 		000000000000000000A1002D /* ThemeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeEngine.swift; sourceTree = "<group>"; };
 		000000000000000000A1002F /* WaveConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveConfig.swift; sourceTree = "<group>"; };
@@ -147,8 +147,6 @@
 		000000000000000000A10043 /* ContextBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextBadge.swift; sourceTree = "<group>"; };
 		000000000000000000A10045 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		000000000000000000A10047 /* MeshBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshBackgroundView.swift; sourceTree = "<group>"; };
-		000000000000000000A100D1 /* AtmosphereView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmosphereView.swift; sourceTree = "<group>"; };
-		000000000000000000A100D3 /* AtmosphereKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmosphereKind.swift; sourceTree = "<group>"; };
 		000000000000000000A10049 /* SoundMixerRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundMixerRow.swift; sourceTree = "<group>"; };
 		000000000000000000A1004B /* StartStopButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartStopButton.swift; sourceTree = "<group>"; };
 		000000000000000000A1004D /* TimerRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerRing.swift; sourceTree = "<group>"; };
@@ -171,7 +169,6 @@
 		000000000000000000A1006F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		000000000000000000A10071 /* stations.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stations.json; sourceTree = "<group>"; };
 		000000000000000000A10073 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		000000000000000000A100E0 /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
 		000000000000000000A10075 /* tr.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tr.lproj; sourceTree = "<group>"; };
 		000000000000000000A10077 /* ja.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ja.lproj; sourceTree = "<group>"; };
 		000000000000000000A10079 /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
@@ -182,6 +179,13 @@
 		000000000000000000A10080 /* StillwayWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StillwayWidgets.entitlements; sourceTree = "<group>"; };
 		000000000000000000A10081 /* Stillway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stillway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000A10082 /* StillwayWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StillwayWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000A100C1 /* StillwayTesting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillwayTesting.swift; sourceTree = "<group>"; };
+		000000000000000000A100D1 /* AtmosphereView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmosphereView.swift; sourceTree = "<group>"; };
+		000000000000000000A100D3 /* AtmosphereKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmosphereKind.swift; sourceTree = "<group>"; };
+		000000000000000000A100E0 /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
+		000000000000000000A100F3 /* PermissionBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionBootstrap.swift; sourceTree = "<group>"; };
+		000000000000000000A100F5 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
+		000000000000000000A100F7 /* TrainHeuristicClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainHeuristicClassifier.swift; sourceTree = "<group>"; };
 		000000000000000000A100F9 /* StillwayMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillwayMemory.swift; sourceTree = "<group>"; };
 		000000000000000000A10110 /* TimerFaceKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFaceKind.swift; sourceTree = "<group>"; };
 		000000000000000000A10112 /* TimerFaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerFaceView.swift; sourceTree = "<group>"; };
@@ -214,23 +218,6 @@
 			path = App;
 			sourceTree = "<group>";
 		};
-		000000000000000000A10099 /* Stillway */ = {
-			isa = PBXGroup;
-			children = (
-				000000000000000000A10087 /* App */,
-				000000000000000000A10088 /* Components */,
-				000000000000000000A10089 /* Core */,
-				000000000000000000A10092 /* Models */,
-				000000000000000000A10093 /* Modifiers */,
-				000000000000000000A10094 /* Views */,
-				000000000000000000A1007D /* Info.plist */,
-				000000000000000000A1007E /* Stillway.entitlements */,
-				000000000000000000A10098 /* Resources */,
-				000000000000000000A10073 /* PrivacyInfo.xcprivacy */,
-			);
-			path = Stillway;
-			sourceTree = "<group>";
-		};
 		000000000000000000A10088 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,14 +228,6 @@
 				000000000000000000A1000D /* PulsingDot.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		000000000000000000A1008A /* Audio */ = {
-			isa = PBXGroup;
-			children = (
-				000000000000000000A1000F /* AudioEngine.swift */,
-			);
-			path = Audio;
 			sourceTree = "<group>";
 		};
 		000000000000000000A10089 /* Core */ = {
@@ -264,6 +243,14 @@
 				000000000000000000A10091 /* Theme */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		000000000000000000A1008A /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A1000F /* AudioEngine.swift */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		000000000000000000A1008B /* Context */ = {
@@ -372,6 +359,8 @@
 		000000000000000000A10095 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				000000000000000000B1F888 /* SoundCarouselView.swift */,
+				000000000000000000B16E0E /* VerticalTimerTube.swift */,
 				000000000000000000A10043 /* ContextBadge.swift */,
 				000000000000000000A10045 /* MainView.swift */,
 				000000000000000000A100D3 /* AtmosphereKind.swift */,
@@ -425,6 +414,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		000000000000000000A10099 /* Stillway */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A10087 /* App */,
+				000000000000000000A10088 /* Components */,
+				000000000000000000A10089 /* Core */,
+				000000000000000000A10092 /* Models */,
+				000000000000000000A10093 /* Modifiers */,
+				000000000000000000A10094 /* Views */,
+				000000000000000000A1007D /* Info.plist */,
+				000000000000000000A1007E /* Stillway.entitlements */,
+				000000000000000000A10098 /* Resources */,
+				000000000000000000A10073 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Stillway;
+			sourceTree = "<group>";
+		};
 		000000000000000000A1009A /* StillwayWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,15 +445,6 @@
 			path = StillwayWidgets;
 			sourceTree = "<group>";
 		};
-		000000000000000000A1009C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				000000000000000000A10081 /* Stillway.app */,
-				000000000000000000A10082 /* StillwayWidgets.appex */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		000000000000000000A1009B = {
 			isa = PBXGroup;
 			children = (
@@ -455,6 +452,15 @@
 				000000000000000000A1009A /* StillwayWidgets */,
 				000000000000000000A1009C /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		000000000000000000A1009C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000A10081 /* Stillway.app */,
+				000000000000000000A10082 /* StillwayWidgets.appex */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -532,7 +538,7 @@
 			mainGroup = 000000000000000000A1009B;
 			packageReferences = (
 			);
-			productRefGroup = 000000000000000000A1009C;
+			productRefGroup = 000000000000000000A1009C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -573,6 +579,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				000000000000000000B16AD1 /* SoundCarouselView.swift in Sources */,
+				000000000000000000B1AF24 /* VerticalTimerTube.swift in Sources */,
 				000000000000000000A10002 /* AppDelegate.swift in Sources */,
 				000000000000000000A10004 /* StillwayApp.swift in Sources */,
 				000000000000000000A10006 /* CustomBottomSheet.swift in Sources */,
@@ -657,6 +665,142 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		000000000000000000A100AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Stillway/Stillway.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = R9VURFRPRC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Stillway/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Stillway uses your location in the background to recognize stations and places you visit, so the right sound can start without opening the app.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Stillway needs always-on location so commute and sleep modes can start while the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Stillway uses your location to detect nearby transit stops and the places you return to.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Stillway reads motion to tell walking, transit, and rest apart — never sent off the device.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		000000000000000000A100AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Stillway/Stillway.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = R9VURFRPRC;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Stillway/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Stillway uses your location in the background to recognize stations and places you visit, so the right sound can start without opening the app.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Stillway needs always-on location so commute and sleep modes can start while the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Stillway uses your location to detect nearby transit stops and the places you return to.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Stillway reads motion to tell walking, transit, and rest apart — never sent off the device.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = targeted;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		000000000000000000A100AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillwayWidgets/StillwayWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = R9VURFRPRC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StillwayWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		000000000000000000A100AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillwayWidgets/StillwayWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = R9VURFRPRC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StillwayWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		000000000000000000A100B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -693,132 +837,9 @@
 			};
 			name = Release;
 		};
-		000000000000000000A100AC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Stillway/Stillway.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = R9VURFRPRC;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Stillway/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = targeted;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		000000000000000000A100AD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Stillway/Stillway.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = R9VURFRPRC;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Stillway/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = targeted;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		000000000000000000A100AE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = StillwayWidgets/StillwayWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = R9VURFRPRC;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = StillwayWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		000000000000000000A100AF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = StillwayWidgets/StillwayWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = R9VURFRPRC;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = StillwayWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Stillway;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSExtension_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sinannergiz.stillway.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		000000000000000000A100AB /* Build configuration list for PBXProject "Stillway" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				000000000000000000A100B0 /* Debug */,
-				000000000000000000A100B1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		000000000000000000A100A9 /* Build configuration list for PBXNativeTarget "Stillway" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -833,6 +854,15 @@
 			buildConfigurations = (
 				000000000000000000A100AE /* Debug */,
 				000000000000000000A100AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		000000000000000000A100AB /* Build configuration list for PBXProject "Stillway" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000000A100B0 /* Debug */,
+				000000000000000000A100B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

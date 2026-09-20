@@ -30,6 +30,19 @@ final class ContextEngine {
     )
 
     var selectedTimerMinutes: Int? = 30
+    var weatherTemp: String = "20°C"
+    var weatherSymbol: String = "cloud.sun.fill"
+    var cityName: String = ""
+    var expectedWeatherSummary: String = "+3s 19°C"
+    var expectedWeatherCondition: String = "Parçalı Bulutlu"
+
+    var weatherDisplayBadge: String {
+        if !cityName.isEmpty {
+            return "\(cityName) • \(expectedWeatherSummary) \(expectedWeatherCondition)"
+        } else {
+            return "\(expectedWeatherSummary) • \(expectedWeatherCondition)"
+        }
+    }
     var showSettings = false
     var showPlaces = false
     var showSounds = false
@@ -141,6 +154,9 @@ final class ContextEngine {
         if !audioEngine.isUsingFileBed {
             toast = localization.string("toast_demo_noise")
         }
+        if let prefs = fetchPreferences(), prefs.hapticBreathingEnabled {
+            breathing.start()
+        }
         liveActivity.start(
             contextName: localization.string(context.localizationKey),
             soundName: localization.string(sound.localizationKey),
@@ -250,6 +266,8 @@ final class ContextEngine {
             prefs.lastKnownLatitude = location.coordinate.latitude
             prefs.lastKnownLongitude = location.coordinate.longitude
         }
+        reverseGeocode(location)
+        fetchWeatherForecast(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         reevaluate()
     }
 
@@ -377,6 +395,78 @@ final class ContextEngine {
         guard let current = locationManager.currentLocation else { return nil }
         return places.min { $0.distance(to: current) < $1.distance(to: current) }.flatMap { place in
             place.distance(to: current) < 150 ? place : nil
+        }
+    }
+
+    func reverseGeocode(_ location: CLLocation) {
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, _ in
+            guard let self, let p = placemarks?.first else { return }
+            let city = p.subLocality ?? p.locality ?? p.administrativeArea ?? ""
+            Task { @MainActor in
+                self.cityName = city
+            }
+        }
+    }
+
+    func fetchWeatherForecast(latitude: Double, longitude: Double) {
+        // Önümüzdeki birkaç saat içinde beklenen hava durumunu çek
+        guard let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&hourly=temperature_2m,weather_code&forecast_hours=6") else { return }
+        Task {
+            do {
+                let (data, _) = try await URLSession.shared.data(from: url)
+                struct ForecastResp: Decodable {
+                    struct Hourly: Decodable {
+                        let time: [String]
+                        let temperature_2m: [Double]
+                        let weather_code: [Int]
+                    }
+                    let hourly: Hourly
+                }
+                let decoded = try JSONDecoder().decode(ForecastResp.self, from: data)
+                // 2-3 saat sonrasının beklenen tahmini (index 2 veya 3)
+                let targetIndex = min(2, max(0, decoded.hourly.temperature_2m.count - 1))
+                let expTemp = Int(round(decoded.hourly.temperature_2m[targetIndex]))
+                let expCode = decoded.hourly.weather_code[targetIndex]
+
+                let sym: String
+                let condKey: String
+                switch expCode {
+                case 0:
+                    sym = "sun.max.fill"
+                    condKey = "weather_clear"
+                case 1, 2:
+                    sym = "cloud.sun.fill"
+                    condKey = "weather_partly_cloudy"
+                case 3:
+                    sym = "cloud.fill"
+                    condKey = "weather_cloudy"
+                case 45, 48:
+                    sym = "cloud.fog.fill"
+                    condKey = "weather_fog"
+                case 51...67, 80...82:
+                    sym = "cloud.rain.fill"
+                    condKey = "weather_rain"
+                case 71...77, 85, 86:
+                    sym = "snowflake"
+                    condKey = "weather_snow"
+                case 95...99:
+                    sym = "cloud.bolt.rain.fill"
+                    condKey = "weather_storm"
+                default:
+                    sym = "cloud.sun.fill"
+                    condKey = "weather_clear"
+                }
+
+                await MainActor.run {
+                    self.weatherTemp = "\(expTemp)°C"
+                    self.weatherSymbol = sym
+                    let hrSuffix = self.localization.string("weather_in_3h")
+                    self.expectedWeatherSummary = "\(hrSuffix) \(expTemp)°C"
+                    self.expectedWeatherCondition = self.localization.string(condKey)
+                }
+            } catch {
+                // Hata durumunda varsayılan tahmin korunur
+            }
         }
     }
 

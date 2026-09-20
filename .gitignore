@@ -22,3 +22,6 @@ data/gtfs/
 # Python
 __pycache__/
 .venv/
+
+# Build outputs
+build/
