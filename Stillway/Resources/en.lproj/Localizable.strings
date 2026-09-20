@@ -148,6 +148,7 @@
 "places_title" = "My Places";
 "places_empty" = "No places learned yet. Stillway will observe your surroundings over the coming days.";
 "places_visits" = "visits";
+"places_confidence" = "%d%% confidence";
 "places_last_seen" = "Last seen";
 "places_auto_on" = "Auto On";
 "places_auto_off" = "Auto Off";
@@ -174,3 +175,21 @@
 "toast_stopped" = "Paused";
 "toast_demo_noise" = "Audio file missing — playing demo tone.";
 "auto_banner" = "Smart session started";
+
+"paywall_badge" = "LIFETIME SANCTUARY";
+"paywall_hook_title" = "Find Stillness in Motion";
+"paywall_hook_subtitle" = "Unlock all 24 spatial soundscapes, dual-layer mixing, station sensing & sleep automation.";
+"paywall_cta_price" = "Unlock Lifetime Access • %@";
+"paywall_guarantee" = "One-time purchase • Zero subscriptions • 100% on-device";
+"paywall_terms" = "Terms of Use";
+"paywall_privacy" = "Privacy Policy";
+
+// Weather Forecast Strings
+"weather_clear" = "Clear";
+"weather_cloudy" = "Cloudy";
+"weather_fog" = "Foggy";
+"weather_in_3h" = "+3h";
+"weather_partly_cloudy" = "Partly Cloudy";
+"weather_rain" = "Rainy";
+"weather_snow" = "Snowy";
+"weather_storm" = "Thunderstorm";

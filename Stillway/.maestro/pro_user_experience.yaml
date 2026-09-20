@@ -1,0 +1,81 @@
+appId: com.sinannergiz.stillway
+---
+# Test 2: Pro Kullanıcı Ana Ekran, Ses Mikseri, Ses Seçici ve Ayarlar Testi
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+    arguments:
+      -bypassPaywall: "true"
+
+# Sistem İzin Dialogları & Apple ID Prompt
+- tapOn:
+    text: "Vazgeç"
+    optional: true
+
+- tapOn:
+    text: "Cancel"
+    optional: true
+
+- tapOn:
+    text: "Uygulamayı Kullanırken İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "While Using App"
+    optional: true
+
+- tapOn:
+    text: "İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "Allow"
+    optional: true
+
+- tapOn:
+    text: "Vazgeç"
+    optional: true
+
+- tapOn:
+    text: "Cancel"
+    optional: true
+
+# Onboarding Sayfalarını Geç (varsa)
+- tapOn:
+    id: "OnboardContinueButton"
+    optional: true
+
+- tapOn:
+    text: "İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "Allow"
+    optional: true
+
+- tapOn:
+    id: "OnboardSkipButton"
+    optional: true
+
+- tapOn:
+    id: "OnboardBeginButton"
+    optional: true
+
+# Pro açık olduğu için doğrudan MainView açılmalı
+- assertVisible: "STILLWAY"
+
+# Play / Pause Tıklaması
+- tapOn:
+    point: "50%,50%"
+
+# Ses Listesi / Mixer Testi
+- tapOn:
+    point: "20%,90%"
+
+# Ayarlar Ekranı Testi
+- tapOn:
+    point: "85%,90%"
+
+# Ayarlar ekranında Pro rozetinin teyidi
+- assertVisible: "STILLWAY"

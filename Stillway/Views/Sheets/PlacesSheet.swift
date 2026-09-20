@@ -79,6 +79,11 @@ struct PlacesSheet: View {
                     Button(lm.string("btn_done")) { dismiss() }
                 }
             }
+            .sheet(isPresented: Bindable(runtime).showPlaceLabel) {
+                PlaceLabelSheet()
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+            }
         }
         .presentationBackground(.regularMaterial)
     }

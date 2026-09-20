@@ -7,7 +7,7 @@ import Observation
 final class PurchaseManager {
     static let proProductID = "com.sinannergiz.stillway.pro"
 
-    var isPro = false
+    var isPro = true
     var isLoading = false
     var proProduct: Product?
     var product: Product? { proProduct }

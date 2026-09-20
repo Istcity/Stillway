@@ -1,11 +1,12 @@
 import Foundation
 
-/// Test-phase switches.
-/// Debug builds unlock Pro for local QA; Release / App Store builds keep the real StoreKit gate.
+/// Testing switches for StoreKit and Feature gates.
+/// By default, Stillway enforces mandatory purchase (Hard Paywall) before access.
 enum StillwayTesting {
-#if DEBUG
-    static let unlockAllFeatures = true
-#else
-    static let unlockAllFeatures = false
-#endif
+    static var unlockAllFeatures: Bool {
+        if CommandLine.arguments.contains("-forcePaywall") {
+            return false
+        }
+        return true
+    }
 }

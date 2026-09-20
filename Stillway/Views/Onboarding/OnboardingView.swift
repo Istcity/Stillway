@@ -33,8 +33,10 @@ struct OnboardingView: View {
 
     private func advanceFromFirst() {
         HapticEngine.tap()
+        withAnimation(.easeInOut(duration: 0.4)) {
+            currentPage = 1
+        }
         primePermissionsIfNeeded()
-        currentPage = 1
     }
 
     private func advanceFromSecond(openShortcuts: Bool) {
@@ -43,7 +45,9 @@ struct OnboardingView: View {
             UIApplication.shared.open(url)
             prefs.first?.shortcutOnboardingDone = true
         }
-        currentPage = 2
+        withAnimation(.easeInOut(duration: 0.4)) {
+            currentPage = 2
+        }
     }
 
     private func finish() {

@@ -148,6 +148,7 @@
 "places_title" = "Yerlerim";
 "places_empty" = "Henüz öğrenilen yer yok. Stillway ortamınızı birkaç gün boyunca izleyecek.";
 "places_visits" = "ziyaret";
+"places_confidence" = "%%%d doğruluk";
 "places_last_seen" = "Son görülme";
 "places_auto_on" = "Otomatik Açık";
 "places_auto_off" = "Otomatik Kapalı";
@@ -174,3 +175,22 @@
 "toast_stopped" = "Durdu";
 "toast_demo_noise" = "Ses dosyası bulunamadı — geçici demo sesi çalıyor.";
 "auto_banner" = "Akıllı oturum başlatıldı";
+
+"paywall_badge" = "ÖMÜR BOYU ERİŞİM • PRO";
+"paywall_hook_title" = "Harekette Dinginliği Bul";
+"paywall_hook_subtitle" = "24 mekansal ses katmanı, çift katmanlı miks, istasyon algılama ve uyku otomasyonunu aç.";
+"paywall_cta_price" = "Ömür Boyu Erişimi Aç • %@";
+"paywall_guarantee" = "Tek seferlik ödeme • Aboneliksiz • %100 Cihaz İçi Gizlilik";
+"paywall_terms" = "Kullanım Şartları";
+"paywall_privacy" = "Gizlilik Politikası";
+
+
+// Weather Forecast Strings
+"weather_clear" = "Açık";
+"weather_cloudy" = "Bulutlu";
+"weather_fog" = "Sisli";
+"weather_in_3h" = "+3s";
+"weather_partly_cloudy" = "Parçalı Bulutlu";
+"weather_rain" = "Yağmurlu";
+"weather_snow" = "Kar Yağışlı";
+"weather_storm" = "Fırtına";

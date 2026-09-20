@@ -1,0 +1,73 @@
+appId: com.sinannergiz.stillway
+---
+# Test 1: Onboarding ve Hard Paywall Zorunluluğu Testi
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+    arguments:
+      -testPaywall: "true"
+
+# Sistem İzin Dialogları (Konum / Bildirim)
+- tapOn:
+    text: "Uygulamayı Kullanırken İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "While Using App"
+    optional: true
+
+- tapOn:
+    text: "İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "Allow"
+    optional: true
+
+# Onboarding Sayfa 1
+- tapOn:
+    id: "OnboardContinueButton"
+
+# Ara İzin Dialogu varsa
+- tapOn:
+    text: "İzin Ver"
+    optional: true
+
+- tapOn:
+    text: "Allow"
+    optional: true
+
+- tapOn:
+    text: "Uygulamayı Kullanırken İzin Ver"
+    optional: true
+
+# Onboarding Sayfa 2 (Kısayollar uygulamasına gitmeden Stillway içinde kalmak için Skip)
+- tapOn:
+    id: "OnboardSkipButton"
+
+# Onboarding Sayfa 3
+- tapOn:
+    id: "OnboardBeginButton"
+
+# Onboarding bittikten sonra Hard Paywall ekranı görünmeli
+- assertVisible:
+    id: "PaywallBadge"
+- assertVisible:
+    id: "PaywallPurchaseButton"
+
+- scrollUntilVisible:
+    element:
+      id: "PaywallRestoreButton"
+    direction: DOWN
+
+- assertVisible:
+    id: "PaywallRestoreButton"
+- assertVisible:
+    id: "PaywallTermsButton"
+- assertVisible:
+    id: "PaywallPrivacyButton"
+
+# Kapatma (dismiss) butonu OLMAMALI (Satın almadan geçiş yasak)
+- tapOn:
+    id: "PaywallRestoreButton"

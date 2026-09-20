@@ -148,7 +148,8 @@
 "places_title" = "学習した場所";
 "places_empty" = "まだ学習した場所はありません。数日間日常を過ごすと自動で認識されます。";
 "places_visits" = "回訪問";
-"places_last_seen" = "最終訪問";
+"places_confidence" = "検知適合率 %d%%";
+"places_last_seen" = "最終検知";
 "places_auto_on" = "自動オン";
 "places_auto_off" = "自動オフ";
 "label_title" = "ここに%d回訪れました。";
@@ -174,3 +175,22 @@
 "toast_stopped" = "一時停止";
 "toast_demo_noise" = "音声ファイルが見つかりません — デモ音を再生中。";
 "auto_banner" = "スマートセッションを開始しました";
+
+"paywall_badge" = "永久アクセス・PRO";
+"paywall_hook_title" = "移動を、静寂の聖域へ。";
+"paywall_hook_subtitle" = "24の立体音響、デュアル音響ミキシング、駅感知、睡眠オートメーションのすべてを解放。";
+"paywall_cta_price" = "永久アクセスを解放 • %@";
+"paywall_guarantee" = "買い切り型・サブスクなし・100%端末内プライベート";
+"paywall_terms" = "利用規約";
+"paywall_privacy" = "プライバシーポリシー";
+
+
+// Weather Forecast Strings
+"weather_clear" = "快晴";
+"weather_cloudy" = "曇り";
+"weather_fog" = "霧";
+"weather_in_3h" = "+3時間";
+"weather_partly_cloudy" = "晴れ時々曇り";
+"weather_rain" = "雨";
+"weather_snow" = "雪";
+"weather_storm" = "雷雨";

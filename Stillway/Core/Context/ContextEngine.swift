@@ -33,8 +33,8 @@ final class ContextEngine {
     var weatherTemp: String = "20°C"
     var weatherSymbol: String = "cloud.sun.fill"
     var cityName: String = ""
-    var expectedWeatherSummary: String = "+3s 19°C"
-    var expectedWeatherCondition: String = "Parçalı Bulutlu"
+    var expectedWeatherSummary: String = "+3h 19°C"
+    var expectedWeatherCondition: String = "Partly Cloudy"
 
     var weatherDisplayBadge: String {
         if !cityName.isEmpty {
@@ -56,7 +56,18 @@ final class ContextEngine {
     var location: LocationManager { locationManager }
     var geofence: GeofenceManager { geofenceManager }
     var motion: MotionClassifier { motionClassifier }
-    var localization = LocalizationManager()
+    var localization = LocalizationManager() {
+        didSet {
+            refreshWeatherLocalization()
+        }
+    }
+
+    func refreshWeatherLocalization() {
+        let hrSuffix = localization.string("weather_in_3h")
+        expectedWeatherSummary = (hrSuffix != "weather_in_3h") ? "\(hrSuffix) 19°C" : "+3h 19°C"
+        let cond = localization.string("weather_partly_cloudy")
+        expectedWeatherCondition = (cond != "weather_partly_cloudy") ? cond : "Partly Cloudy"
+    }
 
     private var modelContext: ModelContext?
     private var isConfigured = false
@@ -189,7 +200,7 @@ final class ContextEngine {
         }
     }
 
-    func selectSound(_ sound: Sound, isPro: Bool, preferences: UserPreferences?) {
+    func selectSound(_ sound: Sound, isPro: Bool, preferences: UserPreferences?, autoPlay: Bool = true) {
         if !sound.isFree && !isPro {
             showSettings = true
             return
@@ -197,19 +208,23 @@ final class ContextEngine {
         audioEngine.primarySound = sound
         preferences?.lastSoundID = sound.id
         themeEngine.apply(context: sound.context)
-        if audioEngine.isPlaying {
-            audioEngine.play(sound: sound, fadeDuration: 2.4)
-            if !audioEngine.isUsingFileBed {
-                toast = localization.string("toast_demo_noise")
+        if autoPlay || audioEngine.isPlaying {
+            if !audioEngine.isPlaying {
+                startManually(context: sound.context, sound: sound)
+            } else {
+                audioEngine.play(sound: sound, fadeDuration: 2.4)
+                if !audioEngine.isUsingFileBed {
+                    toast = localization.string("toast_demo_noise")
+                }
+                liveActivity.update(
+                    contextName: localization.string(sound.context.localizationKey),
+                    soundName: localization.string(sound.localizationKey),
+                    remainingSeconds: audioEngine.remainingSeconds,
+                    accentHex: Self.accentHex(for: sound.context),
+                    isPlaying: true,
+                    atmosphereKind: AtmosphereKind.resolve(soundID: sound.id, context: sound.context).rawValue
+                )
             }
-            liveActivity.update(
-                contextName: localization.string(sound.context.localizationKey),
-                soundName: localization.string(sound.localizationKey),
-                remainingSeconds: audioEngine.remainingSeconds,
-                accentHex: Self.accentHex(for: sound.context),
-                isPlaying: true,
-                atmosphereKind: AtmosphereKind.resolve(soundID: sound.id, context: sound.context).rawValue
-            )
         }
         HapticEngine.select()
     }

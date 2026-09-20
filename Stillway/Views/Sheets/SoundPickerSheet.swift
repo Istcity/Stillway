@@ -179,13 +179,15 @@ struct SoundPickerSheet: View {
 
     private func select(_ sound: Sound, locked: Bool) {
         if locked {
-            runtime.showSettings = true
             dismiss()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                runtime.showSettings = true
+            }
             return
         }
         let prefs = try? modelContext.fetch(FetchDescriptor<UserPreferences>()).first
         let isProActive = store.isPro || StillwayTesting.unlockAllFeatures
-        runtime.selectSound(sound, isPro: isProActive, preferences: prefs)
+        runtime.selectSound(sound, isPro: isProActive, preferences: prefs, autoPlay: true)
         HapticEngine.select()
         dismiss()
     }

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stillway — Neural Ambient Audio | Focus, Sleep & Commute</title>
+  <meta name="description" content="Zero taps required. Stillway is an on-device ambient audio sanctuary that senses your daily context and harmonizes your mind with 24 master soundscapes and real binaural synthesis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090E;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #E5A93C;
+      --accent-glow: rgba(229, 169, 60, 0.35);
+      --text: #F5F5F7;
+      --text-muted: rgba(245, 245, 247, 0.65);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    .ambient-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(7,9,14,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 9, 14, 0.75);
+      border-bottom: 1px solid var(--card-border);
+      z-index: 100;
+      padding: 16px 24px;
+    }
+    .nav-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 24px;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .hero {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 90px auto 60px;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(229, 169, 60, 0.12);
+      border: 1px solid rgba(229, 169, 60, 0.35);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #FFF 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+    }
+    .cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #FBE09D, #E5A93C);
+      color: #07090E;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 1rem;
+      box-shadow: 0 10px 25px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(229, 169, 60, 0.5);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); }
+    .features {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 80px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(16px);
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: rgba(229, 169, 60, 0.3); }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .soundscapes {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 80px auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--card-border);
+      padding: 48px 24px;
+      margin-top: 100px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <span class="logo-dot"></span>Stillway
+      </a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#sounds">Soundscapes</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">✨ Zero Taps Required • 100% On-Device</div>
+      <h1>Your Invisible <span>Acoustic Sanctuary.</span></h1>
+      <p class="hero-subtitle">
+        Stillway recognizes your daily transitions—from crowded morning commutes to deep focus sessions and restorative sleep—generating the perfect neural soundscape without touching your phone.
+      </p>
+      <div class="cta-group">
+        <a href="#" class="btn-primary">Download on the App Store</a>
+        <a href="support.html" class="btn-secondary">Customer Support</a>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Real Binaural Beat Synthesis</h3>
+        <p>Entrain your brainwaves in real-time across Delta (deep sleep), Theta (meditation), Alpha (flow state), Beta (high focus), and Gamma (peak cognition) frequencies.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🚇</div>
+        <h3>Subway & Urban Masking</h3>
+        <p>Acoustically calibrated noise-cancelling beds designed specifically to dissolve loud train rumbles, rail screeches, and crowded office chatter.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🌌</div>
+        <h3>Generative 3D Atmosphere</h3>
+        <p>Hypnotic, slow-breathing spatial visuals inspired by James Turrell and bioluminescent natural phenomena. Turns your desk into an ambient living artwork.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⏳</div>
+        <h3>Living Metaphorical Clocks</h3>
+        <p>Five living vertical timers: realistic water clepsydras with rising micro-bubbles, cascading golden sand dunes, and steady solar dials.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🫁</div>
+        <h3>Haptic Box Breathing (4-4-4-4)</h3>
+        <p>Mindfulness in your pocket. Subtle haptic pulses guide your breath cycles with your screen off and eyes closed.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>100% Offline & Private</h3>
+        <p>No user accounts, no analytics, no cloud uploads. All context and location recognition operates entirely locally on your iPhone.</p>
+      </div>
+    </section>
+
+    <section class="soundscapes" id="sounds">
+      <h2 style="font-size: 2rem; margin-bottom: 12px;">24 Master Stereo Soundscapes</h2>
+      <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Pristine 48kHz spatial audio field recordings from Tokyo, Kyoto, Paris, and Istanbul.</p>
+      <div class="pill-grid">
+        <span class="pill">🌧️ Night Rain</span>
+        <span class="pill">🔔 Zen Temple Bell</span>
+        <span class="pill">🚢 Bosphorus Steamer</span>
+        <span class="pill">🚄 Shinkansen Express</span>
+        <span class="pill">📖 Minka Library</span>
+        <span class="pill">🌲 Kyoto Cedar</span>
+        <span class="pill">🌊 Bioluminescent Mist</span>
+        <span class="pill">☕ Velvet Salon</span>
+        <span class="pill">🌌 Silent Aurora</span>
+        <span class="pill">🔥 Hearth Ember</span>
+        <span class="pill">❄️ Silent Snowfall</span>
+        <span class="pill">🧘 528Hz Sacred Om</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Stillway by Sinan Nergiz. All rights reserved.</p>
+    <p style="margin-top: 10px;">
+      <a href="support.html">Customer Support</a> •
+      <a href="privacy.html">Privacy Policy</a> •
+      <a href="terms.html">Terms of Service</a>
+    </p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stillway Support & FAQ</title>
+  <meta name="description" content="Get help, troubleshooting tips, and contact support for Stillway on iOS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090E;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #E5A93C;
+      --text: #F5F5F7;
+      --text-muted: rgba(245, 245, 247, 0.65);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      padding: 0 24px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 0 100px;
+    }
+    header {
+      margin-bottom: 48px;
+    }
+    .back-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .lead {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .contact-box {
+      background: rgba(229, 169, 60, 0.08);
+      border: 1px solid rgba(229, 169, 60, 0.3);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .contact-box h2 {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+    .contact-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #07090E;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      text-decoration: none;
+      width: fit-content;
+      margin-top: 8px;
+    }
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .faq-item h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .faq-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 36px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; margin: 0 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html" class="back-link">← Back to Stillway Home</a>
+      <h1>Customer Support & Help Center</h1>
+      <p class="lead">Need assistance with Stillway? We are here to help you get the most restful and focused acoustic experience.</p>
+    </header>
+
+    <div class="contact-box">
+      <h2>Direct Contact</h2>
+      <p>Have a question, feedback, or need technical help? You can email us directly or submit an issue on our GitHub repository:</p>
+      <p><strong>Email:</strong> <a href="mailto:sinannergiz@gmail.com" style="color: var(--accent);">sinannergiz@gmail.com</a></p>
+      <p><strong>GitHub Issues:</strong> <a href="https://github.com/Istcity/Stillway/issues" style="color: var(--accent);" target="_blank">github.com/Istcity/Stillway/issues</a></p>
+      <a href="mailto:sinannergiz@gmail.com?subject=Stillway%20Support%20Request" class="contact-btn">Send Us an Email</a>
+    </div>
+
+    <section>
+      <h2 style="font-size: 1.6rem; margin-bottom: 24px;">Frequently Asked Questions (FAQ)</h2>
+
+      <div class="faq-item">
+        <h3>1. Why can't I hear any sound when selecting a soundscape?</h3>
+        <p>Ensure your iPhone's silent/mute switch or Action button is not actively silencing your media. Stillway uses AVAudioSession category Ambient/Playback so it plays even when the silent switch is on, but system volume may be muted. Check the volume slider inside Stillway or use your hardware volume buttons.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>2. Does Stillway work offline without an internet connection?</h3>
+        <p>Yes, 100%. All 24 master audio field recordings and the real-time neural binaural synthesizer are stored locally inside the application. You can use Stillway on flights, deep subways, or off-grid retreats without any cell reception or Wi-Fi.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>3. Do I need headphones for Binaural Beats?</h3>
+        <p>Yes. True binaural beats operate by feeding two slightly different frequencies to the left and right ear independently (for example, 200 Hz in one ear and 206 Hz in the other to create a 6 Hz Theta brainwave entrainment). For binaural benefits, stereo headphones or AirPods are required.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>4. How does Context Intelligence respect my privacy?</h3>
+        <p>Stillway processes location and transit visits strictly on-device using Apple's local CoreLocation and CoreMotion APIs. We do not maintain any cloud servers, user accounts, or telemetry trackers. Your home, commute, and work coordinates never leave your iPhone.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>5. How do I switch languages?</h3>
+        <p>Tap the Settings (gear) icon in the top left of Stillway. Under the "Language" section, you can instantly toggle between English, Japanese (日本語), Turkish (Türkçe), and French (Français) with zero app restarts.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 Stillway by Sinan Nergiz. All rights reserved.</p>
+      <p style="margin-top: 8px;">
+        <a href="index.html">Home</a> •
+        <a href="privacy.html">Privacy Policy</a> •
+        <a href="terms.html">Terms of Service</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

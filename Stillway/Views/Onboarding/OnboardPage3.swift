@@ -47,6 +47,7 @@ struct OnboardPage3: View {
                     .padding(.horizontal, 32)
                 Spacer()
                 PillButton(label: lm.string("onboard_3_btn"), action: onBegin)
+                    .accessibilityIdentifier("OnboardBeginButton")
                     .padding(.horizontal, 24)
                     .padding(.bottom, 48)
             }

@@ -9,34 +9,22 @@ struct MainView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Query private var preferences: [UserPreferences]
 
-    // Dynamic weather pulled from ContextEngine
-    @State private var showSettings = false
-    @State private var showSounds = false
-    @State private var showPlaces = false
+    private enum MainSheet: Int, Identifiable {
+        case settings = 1
+        case sounds = 2
+        case places = 3
+
+        var id: Int { rawValue }
+    }
+
+    @State private var activeSheet: MainSheet? = nil
     @State private var showControls = true
     @State private var isOLEDMode = false
-    @State private var autoHideTask: Task<Void, Never>? = nil
 
     private func toggleControls() {
         HapticEngine.tap()
         withAnimation(.spring(response: 0.38, dampingFraction: 0.82)) {
             showControls.toggle()
-        }
-        if showControls {
-            scheduleControlsAutoHide()
-        } else {
-            autoHideTask?.cancel()
-        }
-    }
-
-    private func scheduleControlsAutoHide() {
-        autoHideTask?.cancel()
-        autoHideTask = Task {
-            try? await Task.sleep(for: .seconds(7))
-            guard !Task.isCancelled else { return }
-            withAnimation(.easeInOut(duration: 0.45)) {
-                showControls = false
-            }
         }
     }
 
@@ -57,6 +45,10 @@ struct MainView: View {
             // Generative 3D volumetric atmosphere backdrop (expands across full screen)
             AtmosphereView()
                 .ignoresSafeArea()
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    toggleControls()
+                }
 
             // OLED Gece Masası / Pil Tasarrufu Modu (Saf #000000 derin siyah)
             if isOLEDMode {
@@ -64,6 +56,10 @@ struct MainView: View {
                     .opacity(0.94)
                     .ignoresSafeArea()
                     .transition(.opacity)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        toggleControls()
+                    }
             }
 
             // Subtle vignette for cinematic depth
@@ -90,38 +86,44 @@ struct MainView: View {
                     .frame(maxHeight: .infinity, alignment: .top)
             }
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            toggleControls()
-        }
         .contextThemed()
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .settings:
+                SettingsSheet()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
+            case .sounds:
+                SoundPickerSheet()
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            case .places:
+                PlacesSheet()
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+        }
         .onAppear {
             ensurePreferences()
             if preferences.first?.didRequestLocationPermission != true {
                 Task { await runtime.requestStartupPermissions() }
             }
-            scheduleControlsAutoHide()
-        }
-        .onChange(of: isLandscape) { _, newValue in
-            if newValue {
-                scheduleControlsAutoHide()
-            }
         }
         .onChange(of: runtime.showSettings) { _, newValue in
             if newValue {
-                showSettings = true
+                activeSheet = .settings
                 runtime.showSettings = false
             }
         }
         .onChange(of: runtime.showSounds) { _, newValue in
             if newValue {
-                showSounds = true
+                activeSheet = .sounds
                 runtime.showSounds = false
             }
         }
         .onChange(of: runtime.showPlaces) { _, newValue in
             if newValue {
-                showPlaces = true
+                activeSheet = .places
                 runtime.showPlaces = false
             }
         }
@@ -171,7 +173,6 @@ struct MainView: View {
                         context: activeSound.context,
                         hideTopIcon: !showControls
                     ) { minutes in
-                        scheduleControlsAutoHide()
                         runtime.selectTimer(minutes)
                     }
                     Spacer()
@@ -202,11 +203,9 @@ struct MainView: View {
                         selectedSound: activeSound,
                         isPlaying: runtime.audio.isPlaying,
                         onSelectSound: { sound in
-                            scheduleControlsAutoHide()
                             selectSound(sound)
                         },
                         onTogglePlay: {
-                            scheduleControlsAutoHide()
                             runtime.handleStartStop(preferences: preferences.first)
                         }
                     )
@@ -311,11 +310,9 @@ struct MainView: View {
                     selectedSound: activeSound,
                     isPlaying: runtime.audio.isPlaying,
                     onSelectSound: { sound in
-                        scheduleControlsAutoHide()
                         selectSound(sound)
                     },
                     onTogglePlay: {
-                        scheduleControlsAutoHide()
                         runtime.handleStartStop(preferences: preferences.first)
                     }
                 )
@@ -549,7 +546,6 @@ struct MainView: View {
                 value: Binding(
                     get: { Double(runtime.audio.primaryVolume) },
                     set: { newVal in
-                        scheduleControlsAutoHide()
                         runtime.audio.primaryVolume = Float(newVal)
                     }
                 ),

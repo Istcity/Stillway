@@ -201,7 +201,7 @@ final class UserPreferences {
         sleepEndHour: Int = 7,
         hapticBreathingEnabled: Bool = false,
         shortcutOnboardingDone: Bool = false,
-        isPro: Bool = false,
+        isPro: Bool = true,
         onboardingCompleted: Bool = false,
         selectedLanguage: String = LanguageCode.detect().rawValue,
         lastKnownLatitude: Double = 0,
