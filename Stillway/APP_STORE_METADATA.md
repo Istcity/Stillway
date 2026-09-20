@@ -19,9 +19,26 @@ Bu belge, Stillway'in App Store Connect üzerinden yayınlanması için gerekli 
 | **Kullanım Koşulları URL (Terms URL)** | `https://istcity.github.io/Stillway/terms.html` |
 | **İletişim E-Postası (Contact Email)** | `snnnrgz@gmail.com` |
 
-### App Store Veri Gizliliği (App Privacy / Besin Etiketi)
-* **Veri Toplanmaz (Data Not Collected):** Stillway sunucuya hiçbir kişisel veri, konum verisi veya ses telemetrisi göndermez. Tüm konum, hareket ve uyku analizleri Apple'ın yerel CoreLocation/CoreMotion motoru ile doğrudan kullanıcının cihazında işlenir.
-* Bu sebeple App Store Connect'te **"Bu uygulamadan herhangi bir veri toplamıyoruz"** seçeneği işaretlenmelidir.
+### App Store Veri Gizliliği (App Privacy / Besin Etiketi) - Zorunlu Adım
+App Store Connect'te incelemeye gönderebilmek için sol menüden **App Privacy (Uygulama Gizliliği)** bölümü Admin yetkisiyle doldurulmalıdır:
+1. Sol menüden **App Privacy** (Uygulama Gizliliği) sekmesine tıklayın.
+2. **Get Started** (Başlayın) butonuna tıklayın.
+3. *"Do you or your third-party partners collect data from this app?"* sorusuna:
+   👉 **"No, we do not collect data from this app"** *(Hayır, bu uygulamadan veri toplamıyoruz)* seçeneğini işaretleyin.
+4. **Publish** (Yayınla) butonuna basarak gizlilik etiketini onaylayın.
+*(Stillway %100 çevrimdışı ve gizlilik odaklıdır; `PrivacyInfo.xcprivacy` dosyamızda veri toplama sıfırdır, üçüncü parti SDK/izleyici bulunmaz).*
+
+---
+
+### Ekran Görüntüleri Konumları (App Store Connect Screenshots)
+
+| Ekran Tipi | Çözünürlük | Klasör Yolu |
+|---|---|---|
+| **iPhone 6.7" / 6.9" Display** | 1290 x 2796 | `screenshots_studio/output_torn_magazine/{en,ja,tr}/` |
+| **13-inch iPad Display (Zorunlu)** | 2048 x 2732 | `screenshots_studio/output_ipad_13/{en,ja,tr}/` |
+
+> [!TIP]
+> iPad ekran görüntüleri hazır olarak üretilmiştir (`2048 x 2732 px`). App Store Connect'teki **13-inch iPad displays** alanına ilgili dildeki görselleri sürükleyip bırakmanız yeterlidir.
 
 ---
 
@@ -271,23 +288,42 @@ Stillwayのファーストリリースへようこそ！
 
 ## 5. APP STORE REVIEW INSTRUCTIONS (İnceleme Ekibi İçin Notlar)
 
-App Store Review ekibinin testi hızla tamamlayabilmesi için App Store Connect'teki **"Review Notes" (İnceleme Notları)** kutusuna aşağıdaki İngilizce notu yapıştırın:
+App Store Connect'te **App Review Information (Uygulama İnceleme Bilgileri)** altındaki:
+- **Sign-In Required (Giriş Gerekli mi?):** ❌ **İşaretlenmemiş olmalı (Unchecked)** — Uygulamada hesap açma veya oturum açma zorunluluğu yoktur.
+- **Notes (İnceleme Notları):** Aşağıdaki İngilizce metni kopyalayıp **Notes** kutusuna yapıştırın:
 
 ```text
-Dear Review Team,
+Dear Apple App Review Team,
 
-Stillway is an ambient audio and lifestyle app designed for commuters, professionals, and individuals seeking restful sleep.
+Thank you for reviewing Stillway. Below is the essential information to facilitate your review process:
 
-Key Review Information:
-1. No account or login is required to test any part of the application.
-2. The app is fully offline-first. All 24 master audio files and neural binaural generators operate natively on the device.
-3. Location, Motion, and Notification permissions are used exclusively for on-device context detection (e.g. transit station arrival, walking rhythm, desk stillness, or bedtime detection) via CoreLocation/CoreMotion. No telemetry or tracking data is sent to external servers.
-4. To test deep links and immediate mode switches, you can run:
-   - stillway://sounds (Opens sound library & binaural frequency sheet)
-   - stillway://settings (Opens settings & language selector)
-   - stillway://places (Opens visited smart geofence locations)
-   - stillway://toggle (Toggles playback)
-5. Languages can be instantly switched between English, Japanese, Turkish, and French inside the Settings sheet.
+1. NO SIGN-IN OR ACCOUNT REQUIRED
+Stillway is designed with an offline-first, privacy-first philosophy. There are no user accounts, logins, or cloud credentials required to access and test any part of the application.
 
-Thank you for your review!
+2. CORE FEATURES & TESTING WORKFLOW
+- Master Audio & Generative Ambience: Tap any environment card (e.g., Kyoto Cedar, Tokyo Metro, Zen Bell) to start playback. Audio continues smoothly in the background via AVAudioSession.
+- Real-Time Binaural Entrainment: Open the frequency sheet to layer Delta, Theta, Alpha, Beta, or Gamma neural beats.
+- Living Metaphorical Clocks: Experience the Clepsydra water dial, cascading sand hourglass, and minimal focus timers from the timer tab.
+- Haptic Box Breathing (4-4-4-4): Guided sensory breathing with rhythmic Taptic Engine pulses.
+- OLED Bedside Sleep Mode: Ambient low-power night clock with sleep countdown timer.
+
+3. IN-APP PURCHASE (STILLWAY PRO)
+- Product ID: com.sinannergiz.stillway.pro (Non-Consumable, Lifetime Unlock)
+- Sandbox testing is fully integrated via StoreKit 2. A "Restore Purchases" button is prominently accessible directly from the paywall and the Settings screen.
+
+4. PERMISSIONS & PRIVACY ARCHITECTURE
+- Location & Motion: Used strictly for on-device context detection (e.g., detecting commute transit, walking rhythm, desk stillness, or bedtime) via CoreLocation and CoreMotion.
+- All telemetry and sensor computations remain 100% on the user's physical device. No personal data, audio recordings, or location trails are transmitted to external servers.
+
+5. UNIVERSAL SUPPORT & LOCALIZATION
+- Fully supports both iPhone and iPad displays in both portrait and landscape modes.
+- Supports 4 languages (English, Japanese, Turkish, French) which can be switched dynamically from the in-app Settings.
+
+6. DIRECT CONTACT
+If you have any questions or require additional information during your review, please do not hesitate to reach out:
+- Contact Name: Sinan Nergiz
+- Email: snnnrgz@gmail.com
+
+Thank you for your time and guidance!
 ```
+
