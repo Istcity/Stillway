@@ -34,14 +34,14 @@ struct ProPaywallView: View {
             .allowsHitTesting(false)
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 28) {
+                VStack(spacing: 16) {
                     // Header Badge
-                    VStack(spacing: 8) {
+                    VStack(spacing: 6) {
                         Text("STILLWAY")
                             .font(.system(size: 13, weight: .bold, design: .rounded))
                             .tracking(6)
                             .foregroundStyle(.white.opacity(0.6))
-                            .padding(.top, 36)
+                            .padding(.top, 16)
 
                         HStack(spacing: 6) {
                             Image(systemName: "sparkles")
@@ -53,7 +53,7 @@ struct ProPaywallView: View {
                         .accessibilityIdentifier("PaywallBadge")
                         .foregroundStyle(Color(red: 0.95, green: 0.78, blue: 0.45))
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 5)
                         .background(
                             Capsule()
                                 .fill(Color(red: 0.95, green: 0.78, blue: 0.45).opacity(0.12))
@@ -66,12 +66,12 @@ struct ProPaywallView: View {
 
                     // Dynamic Waveform Visual
                     WaveformView()
-                        .frame(height: 110)
+                        .frame(height: 58)
                         .padding(.horizontal, 20)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 2)
 
                     // Hero Hook Title
-                    VStack(spacing: 10) {
+                    VStack(spacing: 8) {
                         GradientText(
                             text: lm.string("paywall_hook_title"),
                             colors: [
@@ -80,19 +80,19 @@ struct ProPaywallView: View {
                                 theme.gradient.glowColor
                             ]
                         )
-                        .font(.system(size: 28, weight: .semibold, design: .serif))
+                        .font(.system(size: 26, weight: .semibold, design: .serif))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
 
                         Text(lm.string("paywall_hook_subtitle"))
-                            .font(.system(size: 15, weight: .regular))
+                            .font(.system(size: 14, weight: .regular))
                             .foregroundStyle(.white.opacity(0.72))
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 28)
                     }
 
                     // Feature Cards (Editorial Layout)
-                    VStack(spacing: 12) {
+                    VStack(spacing: 8) {
                         featureRow(icon: "waveform.badge.magnifyingglass", titleKey: "settings_pro_feature_1")
                         featureRow(icon: "slider.horizontal.2.square", titleKey: "settings_pro_feature_2")
                         featureRow(icon: "tram.fill", titleKey: "settings_pro_feature_3")
@@ -103,7 +103,7 @@ struct ProPaywallView: View {
                     .padding(.horizontal, 22)
 
                     // Call to Action Box
-                    VStack(spacing: 14) {
+                    VStack(spacing: 12) {
                         Button {
                             handlePurchase()
                         } label: {
@@ -187,10 +187,20 @@ struct ProPaywallView: View {
     }
 
     private var ctaButtonText: String {
-        if let product = store.proProduct {
+        let localizedPrice: String
+        switch lm.currentLanguage {
+        case .tr:
+            localizedPrice = "999 TL"
+        case .ja:
+            localizedPrice = "¥3,000"
+        default:
+            localizedPrice = "$19.99"
+        }
+
+        if let product = store.proProduct, !ProcessInfo.processInfo.arguments.contains("-forcePaywall") {
             return String(format: lm.string("paywall_cta_price"), product.displayPrice)
         } else {
-            return String(format: lm.string("paywall_cta_price"), "$4.99")
+            return String(format: lm.string("paywall_cta_price"), localizedPrice)
         }
     }
 
@@ -214,7 +224,7 @@ struct ProPaywallView: View {
             Spacer()
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+        .padding(.vertical, 6.5)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(Color.white.opacity(0.035))

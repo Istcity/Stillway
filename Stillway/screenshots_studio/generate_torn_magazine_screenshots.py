@@ -20,6 +20,7 @@ NEWYORK_FONT = "/System/Library/Fonts/NewYork.ttf"
 SERIF_EN = DIDOT_FONT if os.path.exists(DIDOT_FONT) else (BODONI_FONT if os.path.exists(BODONI_FONT) else NEWYORK_FONT)
 
 SERIF_JA = "/System/Library/Fonts/ヒラギノ明朝 ProN.ttc"
+SANS_JA = "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"
 MONO_FONT = "/System/Library/Fonts/Monaco.dfont" if os.path.exists("/System/Library/Fonts/Monaco.dfont") else "/System/Library/Fonts/Menlo.ttc"
 
 def get_font(path, size, index=0):
@@ -170,7 +171,8 @@ def render_torn_magazine_card(lang, config):
 
     # A. Masthead / Issue Tag
     masthead_text = config[f"meta_{lang}"]
-    masthead_font = get_font(MONO_FONT, 25)
+    masthead_font_path = SANS_JA if lang == "ja" else MONO_FONT
+    masthead_font = get_font(masthead_font_path, 25)
     bbox_m = masthead_font.getbbox(masthead_text)
     mw = bbox_m[2] - bbox_m[0]
     draw.text(((CANVAS_WIDTH - mw) // 2, 88), masthead_text, font=masthead_font, fill=(185, 195, 210, 210))
@@ -223,8 +225,11 @@ def render_torn_magazine_card(lang, config):
     # Text on ripped scrap
     draw = ImageDraw.Draw(canvas)
     stamp_text = config[f"badge_{lang}"]
-    stamp_font = get_font(MONO_FONT, 21)
-    draw.text((CANVAS_WIDTH - 410, CANVAS_HEIGHT - 80), stamp_text, font=stamp_font, fill=(accent_rgb[0], accent_rgb[1], accent_rgb[2], 240))
+    stamp_font_path = SANS_JA if lang == "ja" else MONO_FONT
+    stamp_font = get_font(stamp_font_path, 21)
+    bbox_s = stamp_font.getbbox(stamp_text)
+    sw = bbox_s[2] - bbox_s[0]
+    draw.text((CANVAS_WIDTH - max(sw + 40, 420), CANVAS_HEIGHT - 80), stamp_text, font=stamp_font, fill=(accent_rgb[0], accent_rgb[1], accent_rgb[2], 240))
 
     # Save final torn magazine card
     out_dir = os.path.join(OUT_DIR, lang)
@@ -251,7 +256,7 @@ CONFIGS = [
         "title_ja": "移動を、\n静寂の聖域へ。",
         "title_tr": "HAREKETİN İÇİNDE\nDERİN SESSİZLİK",
         "badge_en": "✦ 48kHz STEREO NEURO-ACOUSTIC",
-        "badge_ja": "✦ 48kHz 立体音響 • 端末内生成",
+        "badge_ja": "★ 48kHz 立体音響 • 端末内生成",
         "badge_tr": "✦ 48kHz ÇİFT KANALLI STEREO SES"
     },
     {
@@ -271,7 +276,7 @@ CONFIGS = [
         "title_ja": "音を、自在に\n編み上げる。",
         "title_tr": "KENDİ ARMONİNİ\nÖZGÜRCE YARAT",
         "badge_en": "✦ DUAL-LAYER MIXER • 432Hz HARMONY",
-        "badge_ja": "✦ 24マスター音源 • 432Hz調律",
+        "badge_ja": "★ 24マスター音源 • 432Hz調律",
         "badge_tr": "✦ ÇİFT KATMANLI MİKSER • 432Hz SOLFEJ"
     },
     {
@@ -291,7 +296,7 @@ CONFIGS = [
         "title_ja": "時を忘れ、\n深く整う。",
         "title_tr": "YAŞAYAN ZAMANLA\nYENİDEN DOĞ",
         "badge_en": "✦ LIVING WATER & SAND CLOCKS",
-        "badge_ja": "✦ 命宿る水時計 • 瞑想タイマー",
+        "badge_ja": "★ 命宿る水時計 • 瞑想タイマー",
         "badge_tr": "✦ CANLI SU VE KUM SAATLERİ"
     },
     {
@@ -311,7 +316,7 @@ CONFIGS = [
         "title_ja": "至福の眠りへ、\n漂う。",
         "title_tr": "KUTUP AURORASIYLA\nDERİN UYKU",
         "badge_en": "✦ 100% ON-DEVICE • PURE OFFLINE",
-        "badge_ja": "✦ 完全オフライン • 究極のプライバシー",
+        "badge_ja": "★ 完全オフライン • 究極のプライバシー",
         "badge_tr": "✦ SIFIR REKLAM • %100 ÇEVRİMDIŞI"
     },
     {
@@ -331,7 +336,7 @@ CONFIGS = [
         "title_ja": "一生モノの静寂を、\nその手に。",
         "title_tr": "ÖMÜR BOYU\nKESİNTİSİZ HUZUR",
         "badge_en": "✦ LIFETIME ACCESS • ONE-TIME PURCHASE",
-        "badge_ja": "✦ 買い切り型 • 永久ライセンス",
+        "badge_ja": "★ 買い切り型 • 永久ライセンス",
         "badge_tr": "✦ ÖMÜR BOYU ERİŞİM • TEK SEFERLİK SATIN ALIM"
     }
 ]

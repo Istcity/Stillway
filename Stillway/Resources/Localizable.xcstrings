@@ -1954,25 +1954,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unlock Lifetime Access • $4.99"
+            "value" : "Unlock Lifetime Access • $19.99"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Débloquer l'accès à vie • 4,99 €"
+            "value" : "Débloquer l'accès à vie • 19,99 $"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "永久アクセスをアンロック • ¥800"
+            "value" : "永久アクセスを解放 • ¥3,000"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ömür Boyu Erişimi Aç • 149,99 ₺"
+            "value" : "Ömür Boyu Erişimi Aç • 999 TL"
           }
         }
       }
@@ -3224,25 +3224,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "$4.99"
+            "value" : "$19.99"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4,99 $"
+            "value" : "19,99 $"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "$4.99"
+            "value" : "¥3,000"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "$4.99"
+            "value" : "999 TL"
           }
         }
       }
