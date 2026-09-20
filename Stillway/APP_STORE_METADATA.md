@@ -17,6 +17,7 @@ Bu belge, Stillway'in App Store Connect üzerinden yayınlanması için gerekli 
 | **Destek URL (Support URL)** | `https://istcity.github.io/Stillway/support.html` |
 | **Gizlilik Politikası URL (Privacy URL)** | `https://istcity.github.io/Stillway/privacy.html` |
 | **Kullanım Koşulları URL (Terms URL)** | `https://istcity.github.io/Stillway/terms.html` |
+| **İletişim E-Postası (Contact Email)** | `snnnrgz@gmail.com` |
 
 ### App Store Veri Gizliliği (App Privacy / Besin Etiketi)
 * **Veri Toplanmaz (Data Not Collected):** Stillway sunucuya hiçbir kişisel veri, konum verisi veya ses telemetrisi göndermez. Tüm konum, hareket ve uyku analizleri Apple'ın yerel CoreLocation/CoreMotion motoru ile doğrudan kullanıcının cihazında işlenir.
