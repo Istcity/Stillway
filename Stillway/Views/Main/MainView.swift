@@ -332,12 +332,7 @@ struct MainView: View {
         HStack(spacing: 8) {
             // Settings button (Left circular)
             circleButton(systemName: "gearshape.fill", label: lm.string("settings_title")) {
-                showSettings = true
-            }
-            .sheet(isPresented: $showSettings) {
-                SettingsSheet()
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .settings
             }
 
             // Dynamic Live Forecast & City capsule (3 saat içinde beklenen durum)
@@ -373,22 +368,12 @@ struct MainView: View {
 
             // Headphones button (opens sound library & frequency sheet)
             circleButton(systemName: "headphones", label: lm.string("sounds_title")) {
-                showSounds = true
-            }
-            .sheet(isPresented: $showSounds) {
-                SoundPickerSheet()
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .sounds
             }
 
             // Places / Compass button (Right circular)
             circleButton(systemName: "location.north.fill", label: lm.string("places_title")) {
-                showPlaces = true
-            }
-            .sheet(isPresented: $showPlaces) {
-                PlacesSheet()
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .places
             }
         }
     }
@@ -398,12 +383,7 @@ struct MainView: View {
     private var topBarLandscape: some View {
         HStack(spacing: 8) {
             circleButton(systemName: "gearshape.fill", label: lm.string("settings_title")) {
-                showSettings = true
-            }
-            .sheet(isPresented: $showSettings) {
-                SettingsSheet()
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .settings
             }
 
             HStack(spacing: 5) {
@@ -420,21 +400,11 @@ struct MainView: View {
             .overlay(Capsule().stroke(theme.gradient.accentColor.opacity(0.55), lineWidth: 1))
 
             circleButton(systemName: "headphones", label: lm.string("sounds_title")) {
-                showSounds = true
-            }
-            .sheet(isPresented: $showSounds) {
-                SoundPickerSheet()
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .sounds
             }
 
             circleButton(systemName: "location.north.fill", label: lm.string("places_title")) {
-                showPlaces = true
-            }
-            .sheet(isPresented: $showPlaces) {
-                PlacesSheet()
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                activeSheet = .places
             }
         }
     }
@@ -517,7 +487,7 @@ struct MainView: View {
     private func selectSound(_ sound: Sound) {
         let isProActive = preferences.first?.isPro == true || StillwayTesting.unlockAllFeatures
         if !sound.isFree && !isProActive {
-            showSettings = true
+            activeSheet = .settings
             return
         }
         theme.apply(soundID: sound.id, context: sound.context)

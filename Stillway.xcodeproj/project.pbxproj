@@ -58,6 +58,8 @@
 		000000000000000000A1005E /* PlacesSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1005D /* PlacesSheet.swift */; };
 		000000000000000000A10060 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A1005F /* SettingsSheet.swift */; };
 		000000000000000000A10062 /* SoundPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10061 /* SoundPickerSheet.swift */; };
+		000000000000000000A10115 /* ProPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10114 /* ProPaywallView.swift */; };
+
 		000000000000000000A10064 /* HomeScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10063 /* HomeScreenWidget.swift */; };
 		000000000000000000A10066 /* LockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10065 /* LockScreenWidget.swift */; };
 		000000000000000000A10068 /* StillwayActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000A10067 /* StillwayActivityAttributes.swift */; };
@@ -160,6 +162,8 @@
 		000000000000000000A1005D /* PlacesSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesSheet.swift; sourceTree = "<group>"; };
 		000000000000000000A1005F /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		000000000000000000A10061 /* SoundPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPickerSheet.swift; sourceTree = "<group>"; };
+		000000000000000000A10114 /* ProPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProPaywallView.swift; sourceTree = "<group>"; };
+
 		000000000000000000A10063 /* HomeScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenWidget.swift; sourceTree = "<group>"; };
 		000000000000000000A10065 /* LockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenWidget.swift; sourceTree = "<group>"; };
 		000000000000000000A10067 /* StillwayActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillwayActivityAttributes.swift; sourceTree = "<group>"; };
@@ -395,6 +399,8 @@
 				000000000000000000A1005D /* PlacesSheet.swift */,
 				000000000000000000A1005F /* SettingsSheet.swift */,
 				000000000000000000A10061 /* SoundPickerSheet.swift */,
+				000000000000000000A10114 /* ProPaywallView.swift */,
+
 			);
 			path = Sheets;
 			sourceTree = "<group>";
@@ -639,6 +645,8 @@
 				000000000000000000A1005E /* PlacesSheet.swift in Sources */,
 				000000000000000000A10060 /* SettingsSheet.swift in Sources */,
 				000000000000000000A10062 /* SoundPickerSheet.swift in Sources */,
+				000000000000000000A10115 /* ProPaywallView.swift in Sources */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
