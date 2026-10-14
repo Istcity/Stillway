@@ -16,6 +16,7 @@ struct StillwayApp: App {
                 .environment(contextEngine.audioEngine)
                 .environment(purchaseManager)
                 .environment(\.lm, lm)
+                .environment(\.locale, lm.locale)
                 .preferredColorScheme(.dark)
                 .statusBarHidden(true)
                 .onAppear {

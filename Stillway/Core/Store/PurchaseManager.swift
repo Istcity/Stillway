@@ -7,7 +7,7 @@ import Observation
 final class PurchaseManager {
     static let proProductID = "com.sinannergiz.stillway.pro"
 
-    var isPro = true
+    var isPro = false
     var isLoading = false
     var proProduct: Product?
     var product: Product? { proProduct }
@@ -15,7 +15,7 @@ final class PurchaseManager {
     var lastError: String? { errorMessage }
 
     init() {
-        if StillwayTesting.unlockAllFeatures {
+        if StillwayTesting.unlockAllFeatures || UserDefaults.standard.bool(forKey: "stillway.isPro.debug") {
             unlockForPreview()
         }
         Task { await loadProduct() }
@@ -33,7 +33,9 @@ final class PurchaseManager {
             await refreshEntitlements()
         } catch {
             errorMessage = error.localizedDescription
-            isPro = UserDefaults.standard.bool(forKey: "stillway.isPro.debug")
+            if StillwayTesting.unlockAllFeatures || UserDefaults.standard.bool(forKey: "stillway.isPro.debug") {
+                isPro = true
+            }
         }
     }
 
@@ -93,6 +95,45 @@ final class PurchaseManager {
                 isPro = true
                 return
             }
+        }
+        isPro = false
+    }
+}
+
+import UIKit
+
+// MARK: - App Store Review Request Controller
+@MainActor
+public enum StillwayReviewPrompter {
+    private static let sessionCountKey = "stillway_completed_sessions_count"
+    private static let lastReviewVersionKey = "stillway_last_reviewed_version"
+
+    public static func recordCompletedSession() {
+        let count = UserDefaults.standard.integer(forKey: sessionCountKey) + 1
+        UserDefaults.standard.set(count, forKey: sessionCountKey)
+
+        // Request review after 2nd and 5th completed session
+        if count == 2 || count == 5 {
+            requestReviewIfAppropriate()
+        }
+    }
+
+    public static func requestReviewIfAppropriate() {
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        let lastVersion = UserDefaults.standard.string(forKey: lastReviewVersionKey)
+
+        guard currentVersion != lastVersion else { return }
+
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: scene)
+            UserDefaults.standard.set(currentVersion, forKey: lastReviewVersionKey)
+        }
+    }
+
+    public static func openAppStoreReview() {
+        // Direct link to App Store product page review sheet
+        if let url = URL(string: "https://apps.apple.com/app/id6670783307?action=write-review") {
+            UIApplication.shared.open(url)
         }
     }
 }

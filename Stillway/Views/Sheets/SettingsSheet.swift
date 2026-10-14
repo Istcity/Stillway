@@ -16,6 +16,7 @@ struct SettingsSheet: View {
     @Environment(PurchaseManager.self) private var store
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
     @Query private var preferences: [UserPreferences]
 
     @State private var permissionSnapshot: PermissionBootstrap.Snapshot?
@@ -82,7 +83,67 @@ struct SettingsSheet: View {
                             }
                         }
 
-                        // Section 2: Language & Region
+                        // Section 2: Atmosphere & Visual Themes (Atmosfer ve Görsel Temalar)
+                        sectionBlock(title: lm.string("settings_atmosphere")) {
+                            glassCard {
+                                VStack(alignment: .leading, spacing: 14) {
+                                    HStack(spacing: 10) {
+                                        iconSquircle("paintpalette.fill")
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(lm.string("settings_atmosphere_title"))
+                                                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                                .foregroundStyle(.white)
+                                            Text(lm.string("settings_atmosphere_desc"))
+                                                .font(.system(size: 12))
+                                                .foregroundStyle(.white.opacity(0.55))
+                                        }
+                                        Spacer()
+                                        if theme.atmosphereOverride != nil {
+                                            Button {
+                                                HapticEngine.tap()
+                                                theme.atmosphereOverride = nil
+                                            } label: {
+                                                Text(lm.string("atmo_reset_auto"))
+                                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                                    .foregroundStyle(accent)
+                                                    .padding(.horizontal, 10)
+                                                    .padding(.vertical, 4)
+                                                    .background(accent.opacity(0.14), in: Capsule())
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                    }
+
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 8) {
+                                            atmospherePill(
+                                                title: lm.string("atmo_auto"),
+                                                icon: "sparkles",
+                                                isSelected: theme.atmosphereOverride == nil,
+                                                accentColor: accent
+                                            ) {
+                                                theme.atmosphereOverride = nil
+                                            }
+
+                                            ForEach(AtmosphereKind.allCases, id: \.self) { kind in
+                                                let isSelected = theme.atmosphereOverride == kind
+                                                atmospherePill(
+                                                    title: kind.displayName(using: lm),
+                                                    icon: kind.symbol,
+                                                    isSelected: isSelected,
+                                                    accentColor: accentForKind(kind)
+                                                ) {
+                                                    theme.atmosphereOverride = kind
+                                                }
+                                            }
+                                        }
+                                        .padding(.vertical, 2)
+                                    }
+                                }
+                            }
+                        }
+
+                        // Section 3: Language & Region
                         sectionBlock(title: lm.string("settings_language")) {
                             glassCard {
                                 VStack(alignment: .leading, spacing: 14) {
@@ -105,7 +166,10 @@ struct SettingsSheet: View {
                                             Button {
                                                 HapticEngine.select()
                                                 lm.currentLanguage = code
+                                                runtime.localization = lm
+                                                runtime.refreshWeatherLocalization()
                                                 prefs?.selectedLanguage = code.rawValue
+                                                try? modelContext.save()
                                             } label: {
                                                 HStack(spacing: 5) {
                                                     Text(code.flag)
@@ -205,10 +269,10 @@ struct SettingsSheet: View {
                             }
                         }
 
-                        // Section 5: Privacy & About
-                        sectionBlock(title: lm.string("settings_about")) {
+                        // Section 5: Privacy Card & About (Gizlilik Kartı)
+                        sectionBlock(title: lm.string("settings_privacy")) {
                             glassCard {
-                                VStack(alignment: .leading, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 14) {
                                     HStack(spacing: 10) {
                                         iconSquircle("shield.lefthalf.filled")
                                         VStack(alignment: .leading, spacing: 2) {
@@ -220,17 +284,88 @@ struct SettingsSheet: View {
                                                 .foregroundStyle(.white.opacity(0.45))
                                         }
                                         Spacer()
+                                        Text("100% OFFLINE")
+                                            .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                            .foregroundStyle(Color(red: 0.4, green: 0.85, blue: 0.55))
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(Color(red: 0.4, green: 0.85, blue: 0.55).opacity(0.12), in: Capsule())
+                                    }
+
+                                    // Privacy Guarantees Pills
+                                    HStack(spacing: 8) {
+                                        privacyPill(icon: "cpu.fill", text: "On-Device")
+                                        privacyPill(icon: "hand.raised.slash.fill", text: "Zero Tracking")
+                                        privacyPill(icon: "person.slash.fill", text: "No Account")
                                     }
 
                                     Text(lm.string("privacy_body"))
                                         .font(.system(size: 12, weight: .regular))
-                                        .foregroundStyle(.white.opacity(0.58))
+                                        .foregroundStyle(.white.opacity(0.68))
                                         .lineSpacing(3)
+
+                                    // Action buttons: Privacy Policy, Terms, Rate Stillway
+                                    VStack(spacing: 4) {
+                                        Button {
+                                            HapticEngine.tap()
+                                            if let url = URL(string: "https://istcity.github.io/Stillway/privacy.html") {
+                                                openURL(url)
+                                            }
+                                        } label: {
+                                            HStack {
+                                                Label(lm.string("paywall_privacy"), systemImage: "hand.raised.fill")
+                                                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                                                Spacer()
+                                                Image(systemName: "arrow.up.right")
+                                                    .font(.system(size: 11))
+                                                    .foregroundStyle(.white.opacity(0.4))
+                                            }
+                                            .foregroundStyle(.white.opacity(0.85))
+                                            .padding(.vertical, 7)
+                                        }
+                                        .buttonStyle(.plain)
+
+                                        Button {
+                                            HapticEngine.tap()
+                                            if let url = URL(string: "https://istcity.github.io/Stillway/terms.html") {
+                                                openURL(url)
+                                            }
+                                        } label: {
+                                            HStack {
+                                                Label(lm.string("paywall_terms"), systemImage: "doc.text.fill")
+                                                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                                                Spacer()
+                                                Image(systemName: "arrow.up.right")
+                                                    .font(.system(size: 11))
+                                                    .foregroundStyle(.white.opacity(0.4))
+                                            }
+                                            .foregroundStyle(.white.opacity(0.85))
+                                            .padding(.vertical, 7)
+                                        }
+                                        .buttonStyle(.plain)
+
+                                        Button {
+                                            HapticEngine.tap()
+                                            StillwayReviewPrompter.openAppStoreReview()
+                                        } label: {
+                                            HStack {
+                                                Label(rateAppTitle, systemImage: "star.fill")
+                                                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                                                Spacer()
+                                                Image(systemName: "arrow.up.right")
+                                                    .font(.system(size: 11))
+                                                    .foregroundStyle(.white.opacity(0.4))
+                                            }
+                                            .foregroundStyle(Color(red: 0.95, green: 0.8, blue: 0.45))
+                                            .padding(.vertical, 7)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
 
                                     Text(lm.string("settings_engine_status"))
                                         .font(.system(size: 11, weight: .medium, design: .monospaced))
                                         .foregroundStyle(accent.opacity(0.8))
-                                        .padding(.top, 4)
+                                        .padding(.top, 2)
                                 }
                             }
                         }
@@ -331,7 +466,11 @@ struct SettingsSheet: View {
                     .padding(.vertical, 4)
 
                     Button {
-                        Task { await store.purchase() }
+                        HapticEngine.tap()
+                        dismiss()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                            runtime.showPaywall = true
+                        }
                     } label: {
                         Text(lm.string("settings_pro_btn"))
                             .font(.system(size: 14, weight: .bold, design: .rounded))
@@ -410,6 +549,55 @@ struct SettingsSheet: View {
             .foregroundStyle(accent)
             .frame(width: 32, height: 32)
             .background(accent.opacity(0.14), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    private func atmospherePill(
+        title: String,
+        icon: String,
+        isSelected: Bool,
+        accentColor: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            HapticEngine.select()
+            action()
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .font(.system(size: 12, weight: .semibold))
+                Text(title)
+                    .font(.system(size: 12, weight: isSelected ? .bold : .medium, design: .rounded))
+            }
+            .foregroundStyle(isSelected ? .black : .white.opacity(0.85))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .background(
+                Capsule()
+                    .fill(isSelected ? accentColor : Color.white.opacity(0.08))
+            )
+            .overlay(
+                Capsule()
+                    .stroke(isSelected ? Color.clear : Color.white.opacity(0.12), lineWidth: 0.8)
+            )
+            .shadow(color: isSelected ? accentColor.opacity(0.4) : .clear, radius: 8)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func accentForKind(_ kind: AtmosphereKind) -> Color {
+        switch kind {
+        case .neonSmoke: return Color(hex: 0xFF007F)
+        case .lavaTube: return Color(hex: 0xFF3D00)
+        case .lightShow: return Color(hex: 0x00E5FF)
+        case .aurora: return Color(hex: 0x7C4DFF)
+        case .rain: return Color(hex: 0x00B0FF)
+        case .lava: return Color(hex: 0xFF5722)
+        case .stream: return Color(hex: 0x26C6DA)
+        case .mist: return Color(hex: 0x2EE59D)
+        case .ember: return Color(hex: 0xFFA726)
+        case .snow: return Color(hex: 0x80D8FF)
+        case .prism: return Color(hex: 0xE040FB)
+        }
     }
 
     private func toggleRow(icon: String, title: String, subtitle: String, keyPath: ReferenceWritableKeyPath<UserPreferences, Bool>) -> some View {
@@ -551,5 +739,27 @@ struct SettingsSheet: View {
             get: { prefs?[keyPath: keyPath] ?? false },
             set: { prefs?[keyPath: keyPath] = $0 }
         )
+    }
+
+    private var rateAppTitle: String {
+        switch lm.currentLanguage {
+        case .tr: return "Stillway'i App Store'da Değerlendir"
+        case .ja: return "App Storeで評価する"
+        case .fr: return "Noter Stillway sur l'App Store"
+        default: return "Rate Stillway on App Store"
+        }
+    }
+
+    private func privacyPill(icon: String, text: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 10, weight: .semibold))
+            Text(text)
+                .font(.system(size: 10, weight: .medium, design: .rounded))
+        }
+        .foregroundStyle(.white.opacity(0.8))
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .background(Color.white.opacity(0.08), in: Capsule())
     }
 }

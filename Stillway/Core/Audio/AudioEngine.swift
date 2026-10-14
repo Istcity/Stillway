@@ -81,13 +81,16 @@ final class AudioEngine {
         setupRemoteCommandCenter()
     }
 
-    func play(sound: Sound, fadeDuration: Double = 1.5) {
+    func play(sound: Sound, fadeDuration: Double = 1.2) {
         primarySound = sound
         schedule(player: primaryPlayer, sound: sound)
         startEngineIfNeeded()
+        // Smooth Time-to-sound fade-in: start mixer at 0 to avoid audio clicks
+        primaryMixer.outputVolume = 0.0
         primaryPlayer.play()
         if let sec = secondarySound {
             schedule(player: secondaryPlayer, sound: sec)
+            secondaryMixer.outputVolume = 0.0
             secondaryPlayer.play()
         }
         isPlaying = true
@@ -108,6 +111,21 @@ final class AudioEngine {
             }
         }
         HapticEngine.success()
+    }
+
+    func crossfade(to sound: Sound, duration: Double = 1.5) {
+        fadeTask?.cancel()
+        fadeTask = Task { [weak self] in
+            guard let self else { return }
+            await self.fadeAsync(to: 0, on: self.primaryMixer, duration: duration * 0.4)
+            self.primaryPlayer.stop()
+            self.primarySound = sound
+            self.schedule(player: self.primaryPlayer, sound: sound)
+            self.startEngineIfNeeded()
+            self.primaryPlayer.play()
+            await self.fadeAsync(to: self.primaryVolume, on: self.primaryMixer, duration: duration * 0.6)
+            self.updateNowPlayingInfo()
+        }
     }
 
     func playSecondary(sound: Sound) {
@@ -132,6 +150,9 @@ final class AudioEngine {
     }
 
     func stop(fadeDuration: Double = 2.0) {
+        if let start = self.sessionStart, Date().timeIntervalSince(start) >= 300 {
+            StillwayReviewPrompter.recordCompletedSession()
+        }
         journeyTask?.cancel()
         fadeTask?.cancel()
         fadeTask = Task { [weak self] in
@@ -142,9 +163,6 @@ final class AudioEngine {
             self.primaryPlayer.stop()
             self.secondaryPlayer.stop()
             self.isPlaying = false
-            if let start = self.sessionStart {
-                HealthKitManager.shared.saveMindfulSession(startDate: start, endDate: Date())
-            }
             self.sessionStart = nil
             self.journeyPhase = .idle
             self.clearNowPlayingInfo()
@@ -208,6 +226,7 @@ final class AudioEngine {
             if progress >= 1 {
                 playCompletionChime()
                 stop(fadeDuration: 3.0)
+                StillwayReviewPrompter.recordCompletedSession()
             }
         }
     }
@@ -610,6 +629,7 @@ extension Notification.Name {
     static let placeNeedsLabel = Notification.Name("stillway.placeNeedsLabel")
     static let sleepPromptNeeded = Notification.Name("stillway.sleepPromptNeeded")
     static let stillwayHeadphonesChanged = Notification.Name("stillwayHeadphonesChanged")
+    static let languageDidChange = Notification.Name("stillway.languageDidChange")
 }
 
 private struct SplitMix64 {

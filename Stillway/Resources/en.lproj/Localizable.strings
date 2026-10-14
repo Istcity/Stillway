@@ -91,7 +91,7 @@
 
 "onboard_1_title" = "Stillway learns your rhythm.";
 "onboard_1_body" = "It understands where you are and what you're doing. The ideal acoustic atmosphere starts without you needing to tap a screen.";
-"onboard_1_btn" = "Enable Location";
+"onboard_1_btn" = "Continue";
 "onboard_2_title" = "Pocket your phone.";
 "onboard_2_body" = "When you connect AirPods and approach a station or transit line, Stillway plays autonomously.";
 "onboard_2_btn" = "Set Up Shortcut";
@@ -193,3 +193,28 @@
 "weather_rain" = "Rainy";
 "weather_snow" = "Snowy";
 "weather_storm" = "Thunderstorm";
+
+// New Atmospheric Themes & Sounds
+"snd_neon_vapor" = "Cyber Neon Smoke";
+"snd_neon_vapor_sub" = "Dual neon vapor plumes and ceiling light beams";
+"snd_lava_tube" = "Bioluminescent Lava Tube";
+"snd_lava_tube_sub" = "Fluid magma convection and hypnotic lava lamp flow";
+"snd_prism_light" = "Prismatic Light Show";
+"snd_prism_light_sub" = "Volumetric searchlights, lasers, and optical refractions";
+
+"settings_atmosphere" = "Visual Atmosphere & Themes";
+"settings_atmosphere_title" = "Atmosphere Theme";
+"settings_atmosphere_desc" = "Changes automatically with sound, or lock your favorite visual theme.";
+"atmo_auto" = "Auto";
+"atmo_reset_auto" = "Reset";
+"atmo_aurora" = "Polar Aurora";
+"atmo_rain" = "Night Rain";
+"atmo_lava" = "Hyper Transit";
+"atmo_stream" = "Ocean Mist";
+"atmo_mist" = "Light Aperture";
+"atmo_ember" = "Hearth Embers";
+"atmo_snow" = "Silent Snow";
+"atmo_prism" = "Prism Halo";
+"atmo_neon_smoke" = "Cyber Smoke";
+"atmo_lava_tube" = "Lava Tube";
+"atmo_light_show" = "Light Show";

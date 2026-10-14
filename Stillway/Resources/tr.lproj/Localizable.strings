@@ -91,7 +91,7 @@
 
 "onboard_1_title" = "Stillway sizi öğrenir.";
 "onboard_1_body" = "Nerede olduğunuzu ve anlık ritminizi sezgisel olarak anlar. Sizin hiçbir şeye dokunmanıza gerek kalmadan doğru ambient atmosferi başlatır.";
-"onboard_1_btn" = "Konum İznini Etkinleştir";
+"onboard_1_btn" = "Devam Et";
 "onboard_2_title" = "Telefonu cebinize bırakın.";
 "onboard_2_body" = "AirPods'unuzu taktığınızda veya bir durağa yaklaştığınızda Stillway kendiliğinden çalmaya başlar.";
 "onboard_2_btn" = "Kısayolu Kur";
@@ -194,3 +194,28 @@
 "weather_rain" = "Yağmurlu";
 "weather_snow" = "Kar Yağışlı";
 "weather_storm" = "Fırtına";
+
+// New Atmospheric Themes & Sounds
+"snd_neon_vapor" = "Siber Neon Duman";
+"snd_neon_vapor_sub" = "Sağdan soldan yükselen renkli dumanlar ve tavan ışıkları";
+"snd_lava_tube" = "Renkli Lav Tüpü";
+"snd_lava_tube_sub" = "Akışkan magma süzülüşü ve hipnotik lav tüpü dinginliği";
+"snd_prism_light" = "Işık Oyunları & Lazer";
+"snd_prism_light_sub" = "Spektral ışık kırınımları ve dinamik sahne huzmeleri";
+
+"settings_atmosphere" = "Görsel Atmosfer & Temalar";
+"settings_atmosphere_title" = "Atmosfer Teması";
+"settings_atmosphere_desc" = "Sesle otomatik değişir veya favori görsel temanızı sabitleyin.";
+"atmo_auto" = "Otomatik";
+"atmo_reset_auto" = "Sıfırla";
+"atmo_aurora" = "Kutup Işıkları";
+"atmo_rain" = "Gece Yağmuru";
+"atmo_lava" = "Hızlı Geçiş";
+"atmo_stream" = "Okyanus Sisi";
+"atmo_mist" = "Işık Açıklığı";
+"atmo_ember" = "Şömine Közü";
+"atmo_snow" = "Sessiz Kar";
+"atmo_prism" = "Prizma Halesi";
+"atmo_neon_smoke" = "Siber Duman";
+"atmo_lava_tube" = "Lav Tüpü";
+"atmo_light_show" = "Işık Oyunları";

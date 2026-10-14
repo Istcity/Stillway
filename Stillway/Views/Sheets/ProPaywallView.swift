@@ -6,6 +6,9 @@ struct ProPaywallView: View {
     @Environment(ThemeEngine.self) private var theme
     @Environment(\.lm) private var lm
     @Environment(\.openURL) private var openURL
+    @Environment(\.dismiss) private var dismiss
+
+    var onDismiss: (() -> Void)? = nil
 
     @State private var isPurchasing = false
     @State private var showingError = false
@@ -15,7 +18,7 @@ struct ProPaywallView: View {
     private let privacyURL = URL(string: "https://istcity.github.io/Stillway/privacy.html")!
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             AtmosphereView()
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
@@ -32,6 +35,24 @@ struct ProPaywallView: View {
             )
             .ignoresSafeArea()
             .allowsHitTesting(false)
+
+            // Top Close Button
+            Button {
+                HapticEngine.tap()
+                if let onDismiss {
+                    onDismiss()
+                } else {
+                    dismiss()
+                }
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 26, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.65))
+                    .padding(18)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("PaywallCloseButton")
+            .zIndex(10)
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
@@ -193,6 +214,8 @@ struct ProPaywallView: View {
             localizedPrice = "999 TL"
         case .ja:
             localizedPrice = "¥3,000"
+        case .fr:
+            localizedPrice = "19,99 €"
         default:
             localizedPrice = "$19.99"
         }
@@ -243,6 +266,13 @@ struct ProPaywallView: View {
             isPurchasing = false
             if store.isPro {
                 HapticEngine.success()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+                    if let onDismiss {
+                        onDismiss()
+                    } else {
+                        dismiss()
+                    }
+                }
             } else if let err = store.errorMessage {
                 alertMessage = err
                 showingError = true
@@ -258,6 +288,13 @@ struct ProPaywallView: View {
             isPurchasing = false
             if store.isPro {
                 HapticEngine.success()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+                    if let onDismiss {
+                        onDismiss()
+                    } else {
+                        dismiss()
+                    }
+                }
             } else if let err = store.errorMessage {
                 alertMessage = err
                 showingError = true

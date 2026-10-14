@@ -8,6 +8,19 @@ final class ThemeEngine {
     /// Logical context after the latest request.
     var currentContext: AppContext = .focus
     var currentSoundID: String? = nil
+    /// Optional visual theme override chosen by the user
+    var atmosphereOverride: AtmosphereKind? {
+        didSet {
+            if let atmosphereOverride {
+                UserDefaults.standard.set(atmosphereOverride.rawValue, forKey: "selected_atmosphere_override")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "selected_atmosphere_override")
+            }
+            transitionTask?.cancel()
+            transitionTask = Task { await transition(to: currentContext, soundID: currentSoundID) }
+        }
+    }
+
     var isTransitioning = false
     /// 0 = outgoing palette, 1 = incoming. Animates for soft theme morphs.
     var blendProgress: Double = 1
@@ -19,6 +32,16 @@ final class ThemeEngine {
     private var fromWave: WaveConfig = WaveConfig.config(for: .focus)
     private var toWave: WaveConfig = WaveConfig.config(for: .focus)
     private var transitionTask: Task<Void, Never>?
+
+    init() {
+        if let raw = UserDefaults.standard.string(forKey: "selected_atmosphere_override"),
+           let kind = AtmosphereKind(rawValue: raw) {
+            self.atmosphereOverride = kind
+            let g = ContextGradient.gradient(for: kind)
+            self.fromGradient = g
+            self.toGradient = g
+        }
+    }
 
     var displayedContext: AppContext { currentContext }
 
@@ -57,7 +80,11 @@ final class ThemeEngine {
     func setImmediate(_ context: AppContext) {
         transitionTask?.cancel()
         currentContext = context
-        let g = ContextGradient.gradient(for: context)
+        let g = if let override = atmosphereOverride {
+            ContextGradient.gradient(for: override)
+        } else {
+            ContextGradient.gradient(for: context)
+        }
         let w = WaveConfig.config(for: context)
         fromGradient = g
         toGradient = g
@@ -73,7 +100,11 @@ final class ThemeEngine {
         let visualWave = waveConfig
         fromGradient = visualGradient
         fromWave = visualWave
-        toGradient = ContextGradient.gradient(for: soundID ?? currentSoundID, context: context)
+        if let override = atmosphereOverride {
+            toGradient = ContextGradient.gradient(for: override)
+        } else {
+            toGradient = ContextGradient.gradient(for: soundID ?? currentSoundID, context: context)
+        }
         toWave = WaveConfig.config(for: context)
         currentContext = context
         blendProgress = 0

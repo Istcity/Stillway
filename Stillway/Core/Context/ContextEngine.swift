@@ -36,16 +36,21 @@ final class ContextEngine {
     var expectedWeatherSummary: String = "+3h 19°C"
     var expectedWeatherCondition: String = "Partly Cloudy"
 
+    var weatherConditionKey: String = "weather_partly_cloudy"
+
     var weatherDisplayBadge: String {
+        let summary = localizedWeatherSummary(using: localization)
+        let cond = localizedWeatherCondition(using: localization)
         if !cityName.isEmpty {
-            return "\(cityName) • \(expectedWeatherSummary) \(expectedWeatherCondition)"
+            return "\(cityName) • \(summary) \(cond)"
         } else {
-            return "\(expectedWeatherSummary) • \(expectedWeatherCondition)"
+            return "\(summary) • \(cond)"
         }
     }
     var showSettings = false
     var showPlaces = false
     var showSounds = false
+    var showPaywall = false
     var showPlaceLabel = false
     var showAutoBanner = false
     var toast: String?
@@ -62,11 +67,31 @@ final class ContextEngine {
         }
     }
 
+    func localizedWeatherSummary(using lm: LocalizationManager) -> String {
+        let hrSuffix = lm.string("weather_in_3h")
+        let prefix = (hrSuffix != "weather_in_3h" && !hrSuffix.contains("_")) ? hrSuffix : (lm.currentLanguage == .tr ? "+3s" : "+3h")
+        return "\(prefix) \(weatherTemp)"
+    }
+
+    func localizedWeatherCondition(using lm: LocalizationManager) -> String {
+        let cond = lm.string(weatherConditionKey)
+        if cond != weatherConditionKey && !cond.contains("_") {
+            return cond
+        }
+        switch weatherConditionKey {
+        case "weather_clear": return lm.currentLanguage == .tr ? "Açık" : (lm.currentLanguage == .ja ? "快晴" : (lm.currentLanguage == .fr ? "Dégagé" : "Clear"))
+        case "weather_cloudy": return lm.currentLanguage == .tr ? "Bulutlu" : (lm.currentLanguage == .ja ? "曇り" : (lm.currentLanguage == .fr ? "Nuageux" : "Cloudy"))
+        case "weather_fog": return lm.currentLanguage == .tr ? "Sisli" : (lm.currentLanguage == .ja ? "霧" : (lm.currentLanguage == .fr ? "Brouillard" : "Foggy"))
+        case "weather_rain": return lm.currentLanguage == .tr ? "Yağmurlu" : (lm.currentLanguage == .ja ? "雨" : (lm.currentLanguage == .fr ? "Pluvieux" : "Rainy"))
+        case "weather_snow": return lm.currentLanguage == .tr ? "Kar Yağışlı" : (lm.currentLanguage == .ja ? "雪" : (lm.currentLanguage == .fr ? "Neige" : "Snowy"))
+        case "weather_storm": return lm.currentLanguage == .tr ? "Fırtına" : (lm.currentLanguage == .ja ? "雷雨" : (lm.currentLanguage == .fr ? "Orage" : "Thunderstorm"))
+        default: return lm.currentLanguage == .tr ? "Parçalı Bulutlu" : (lm.currentLanguage == .ja ? "晴れ時々曇り" : (lm.currentLanguage == .fr ? "Partiellement Nuageux" : "Partly Cloudy"))
+        }
+    }
+
     func refreshWeatherLocalization() {
-        let hrSuffix = localization.string("weather_in_3h")
-        expectedWeatherSummary = (hrSuffix != "weather_in_3h") ? "\(hrSuffix) 19°C" : "+3h 19°C"
-        let cond = localization.string("weather_partly_cloudy")
-        expectedWeatherCondition = (cond != "weather_partly_cloudy") ? cond : "Partly Cloudy"
+        expectedWeatherSummary = localizedWeatherSummary(using: localization)
+        expectedWeatherCondition = localizedWeatherCondition(using: localization)
     }
 
     private var modelContext: ModelContext?
@@ -74,6 +99,7 @@ final class ContextEngine {
     private var tickTask: Task<Void, Never>?
     private var placeObserver: NSObjectProtocol?
     private var sleepObserver: NSObjectProtocol?
+    private var languageObserver: NSObjectProtocol?
 
     func configure(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -100,6 +126,11 @@ final class ContextEngine {
                 guard let self else { return }
                 self.toast = self.localization.string("notif_sleep")
                 NotificationScheduler.shared.suggestSleep(body: self.localization.string("notif_sleep"))
+            }
+        }
+        languageObserver = NotificationCenter.default.addObserver(forName: .languageDidChange, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                self?.refreshWeatherLocalization()
             }
         }
         sleepDetector.onSleepPrompt = { [weak self] in
@@ -202,7 +233,7 @@ final class ContextEngine {
 
     func selectSound(_ sound: Sound, isPro: Bool, preferences: UserPreferences?, autoPlay: Bool = true) {
         if !sound.isFree && !isPro {
-            showSettings = true
+            showPaywall = true
             return
         }
         audioEngine.primarySound = sound
@@ -212,7 +243,7 @@ final class ContextEngine {
             if !audioEngine.isPlaying {
                 startManually(context: sound.context, sound: sound)
             } else {
-                audioEngine.play(sound: sound, fadeDuration: 2.4)
+                audioEngine.crossfade(to: sound, duration: 1.5)
                 if !audioEngine.isUsingFileBed {
                     toast = localization.string("toast_demo_noise")
                 }
@@ -475,9 +506,8 @@ final class ContextEngine {
                 await MainActor.run {
                     self.weatherTemp = "\(expTemp)°C"
                     self.weatherSymbol = sym
-                    let hrSuffix = self.localization.string("weather_in_3h")
-                    self.expectedWeatherSummary = "\(hrSuffix) \(expTemp)°C"
-                    self.expectedWeatherCondition = self.localization.string(condKey)
+                    self.weatherConditionKey = condKey
+                    self.refreshWeatherLocalization()
                 }
             } catch {
                 // Hata durumunda varsayılan tahmin korunur

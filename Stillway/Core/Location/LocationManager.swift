@@ -25,8 +25,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         manager.distanceFilter = 500
-        manager.allowsBackgroundLocationUpdates = true
-        manager.pausesLocationUpdatesAutomatically = false
     }
 
     func requestAlwaysAuthorization() {
@@ -42,7 +40,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
 
     func startAllServices() {
-        manager.startUpdatingLocation()
         manager.startMonitoringVisits()
         manager.startMonitoringSignificantLocationChanges()
     }
@@ -50,7 +47,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func start() { startAllServices() }
 
     func stopAllServices() {
-        manager.stopUpdatingLocation()
         manager.stopMonitoringVisits()
         manager.stopMonitoringSignificantLocationChanges()
     }

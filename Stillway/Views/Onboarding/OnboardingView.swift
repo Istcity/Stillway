@@ -27,7 +27,7 @@ struct OnboardingView: View {
                 finish()
                 return
             }
-            primePermissionsIfNeeded()
+            // İzin isteği, kullanıcı son sayfada "Başla" butonuna bastığında yapılır.
         }
     }
 
@@ -36,7 +36,6 @@ struct OnboardingView: View {
         withAnimation(.easeInOut(duration: 0.4)) {
             currentPage = 1
         }
-        primePermissionsIfNeeded()
     }
 
     private func advanceFromSecond(openShortcuts: Bool) {
@@ -53,6 +52,7 @@ struct OnboardingView: View {
     private func finish() {
         HapticEngine.success()
         ensurePrefs()
+        primePermissionsIfNeeded()
         prefs.first?.onboardingCompleted = true
         if let prefs = prefs.first {
             StillwayMemory.sync(from: prefs)

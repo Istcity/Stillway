@@ -68,7 +68,7 @@ struct VerticalTimerTube: View {
 
                     // Living animated contents (strictly top-to-bottom, proportional filling)
                     GeometryReader { geo in
-                        let w = geo.size.width
+                        let _ = geo.size.width
                         let h = geo.size.height
 
                         // Su ve kum saati için taban havuzu (~%4), diğer sabit artışlı saatler için tam doğrusal oran

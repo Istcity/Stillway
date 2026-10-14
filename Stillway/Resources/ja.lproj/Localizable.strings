@@ -91,7 +91,7 @@
 
 "onboard_1_title" = "Stillwayはあなたの生活を学びます。";
 "onboard_1_body" = "あなたがどこにいて、今何をしているかを理解します。画面を操作しなくても、最適なアンビエントが自動で流れます。";
-"onboard_1_btn" = "位置情報を許可";
+"onboard_1_btn" = "続ける";
 "onboard_2_title" = "スマートフォンをポケットへ。";
 "onboard_2_body" = "AirPodsを装着して駅に近づくと、Stillwayが自動的に再生を開始します。";
 "onboard_2_btn" = "ショートカットを設定";
@@ -194,3 +194,28 @@
 "weather_rain" = "雨";
 "weather_snow" = "雪";
 "weather_storm" = "雷雨";
+
+// New Atmospheric Themes & Sounds
+"snd_neon_vapor" = "サイバーネオンスモーク";
+"snd_neon_vapor_sub" = "左右から立ち昇る色彩スモークと天井ライトビーム";
+"snd_lava_tube" = "ラバチューブ・マグマ";
+"snd_lava_tube_sub" = "流動マグマ対流と催眠的なラバランプの浮遊";
+"snd_prism_light" = "ライトショー＆レーザー";
+"snd_prism_light_sub" = "空間サーチライト、レーザー、光のプリズム屈折";
+
+"settings_atmosphere" = "空間ビジュアル＆テーマ";
+"settings_atmosphere_title" = "ビジュアルテーマ";
+"settings_atmosphere_desc" = "音に合わせて自動変化、またはお好みのテーマを固定できます。";
+"atmo_auto" = "自動";
+"atmo_reset_auto" = "リセット";
+"atmo_aurora" = "極光オーロラ";
+"atmo_rain" = "夜の雨";
+"atmo_lava" = "新幹線光条";
+"atmo_stream" = "海洋の霧";
+"atmo_mist" = "光の開口";
+"atmo_ember" = "暖炉の残火";
+"atmo_snow" = "静寂の雪";
+"atmo_prism" = "プリズムハロ";
+"atmo_neon_smoke" = "サイバースモーク";
+"atmo_lava_tube" = "ラバチューブ";
+"atmo_light_show" = "ライトショー";

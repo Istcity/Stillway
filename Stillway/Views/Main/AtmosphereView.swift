@@ -19,7 +19,10 @@ struct AtmosphereView: View {
     @State private var kindBlend: Double = 1
 
     private var targetKind: AtmosphereKind {
-        AtmosphereKind.resolve(soundID: audio.primarySound?.id, context: theme.currentContext)
+        if let override = theme.atmosphereOverride {
+            return override
+        }
+        return AtmosphereKind.resolve(soundID: audio.primarySound?.id, context: theme.currentContext)
     }
 
     var body: some View {
@@ -175,6 +178,18 @@ struct AtmosphereView: View {
         case .prism:
             // 8. Optik & Işık: Spektral Prizma & Atmosferik Gökkuşağı Halesi (Rainbow Prism)
             drawPrismaticRainbowHalo(context: &context, size: size, t: t, colors: colors, energy: energy)
+
+        case .neonSmoke:
+            // 9. Siber Neon Duman & Tepe Işık Tüpleri (Görüntüdeki Karşılıklı Duman Teması)
+            drawDualNeonSmokeAtmosphere(context: &context, size: size, t: t, colors: colors, energy: energy)
+
+        case .lavaTube:
+            // 10. Renkli Lav Tüpü & Akışkan Magma Lambası
+            drawBioluminescentLavaTube(context: &context, size: size, t: t, colors: colors, energy: energy)
+
+        case .lightShow:
+            // 11. Dinamik Sahne Işık Oyunları & Spektral Prizmatik Lazer Huzmeleri
+            drawPrismaticLightShowBeams(context: &context, size: size, t: t, colors: colors, energy: energy)
         }
     }
 
@@ -826,6 +841,818 @@ struct AtmosphereView: View {
             sparkCtx.fill(
                 Path(ellipseIn: CGRect(x: px - 2.5, y: py - 2.5, width: 5.0, height: 5.0)),
                 with: .color(sparkCol)
+            )
+        }
+    }
+
+    // MARK: - 9. Siber Neon Duman (Cigarette / Incense Wisps & Dual Rising Plumes)
+    // Ekranın sol ve sağından yükselen, ince zarif kıvrımlarla (laminar akıştan türbülanslı
+    // girdaplara) süzülen sigara dumanı tülleri; merkezde birbiriyle kaynaşan mor/eflatun duman helezonları.
+    private func drawDualNeonSmokeAtmosphere(
+        context: inout GraphicsContext,
+        size: CGSize,
+        t: Double,
+        colors: ContextGradient,
+        energy: Double
+    ) {
+        let cx = size.width * 0.5
+        let floorY = size.height * 0.92
+
+        // 1. SOL VE SAĞ SİGARA DUMANI PLÜMLERİ (Left Magenta & Right Cyan Cigarette Smoke Plumes)
+        // Her iki taraf için çok katmanlı, sinüsoidal kıvrımlı, merkez omurgalı ve spiral girdaplı duman tülleri
+        struct SmokeSideConfig {
+            let isLeft: Bool
+            let baseColor: Color
+            let glowColor: Color
+            let coreColor: Color
+            let baseXRatio: CGFloat
+        }
+
+        let sides: [SmokeSideConfig] = [
+            SmokeSideConfig(
+                isLeft: true,
+                baseColor: Color(hex: 0xFF007F), // Canlı Neon Pembe / Macenta
+                glowColor: Color(hex: 0x9C27B0), // Derin Mor / Eflatun
+                coreColor: Color(hex: 0xFF80AB), // Parlak Duman Çekirdeği
+                baseXRatio: 0.14
+            ),
+            SmokeSideConfig(
+                isLeft: false,
+                baseColor: Color(hex: 0x00E5FF), // Elektrik Camgöbeği
+                glowColor: Color(hex: 0x0D47A1), // Kobalt / Okyanus
+                coreColor: Color(hex: 0x80D8FF), // Parlak Camgöbeği Çekirdek
+                baseXRatio: 0.86
+            )
+        ]
+
+        for side in sides {
+            let baseX = size.width * side.baseXRatio
+            let dirSign: CGFloat = side.isLeft ? 1.0 : -1.0
+
+            // Her plüm için 4 adet ince, bağımsız dalgalanan sigara dumanı şeridi (Smoke Ribbons)
+            for ribbonIdx in 0..<4 {
+                let seed = Double(ribbonIdx) * 2.87 + (side.isLeft ? 0.0 : 4.19)
+                let ribbonPhase = t * 0.16 + seed
+
+                var leftPath = Path()
+                var rightPath = Path()
+                var spinePath = Path()
+
+                let steps = 30
+                var spinePoints: [CGPoint] = []
+
+                for step in 0...steps {
+                    let u = Double(step) / Double(steps) // 0.0 (taban) -> 1.0 (üst tepe)
+                    let y = floorY - CGFloat(u) * (size.height * 0.98)
+
+                    // Taban kısımda laminar (ince ve düzgün), yukarı çıktıkça türbülans ve kıvrımlar artar
+                    let laminarFactor = pow(u, 1.45)
+
+                    // Sigara dumanının hava akımındaki salınımı ve helezonik kıvrımları
+                    let wave1 = sin(u * 7.5 - ribbonPhase + seed) * (14.0 + laminarFactor * 48.0)
+                    let wave2 = cos(u * 14.0 - ribbonPhase * 1.4 + seed * 1.5) * (6.0 + laminarFactor * 26.0)
+                    let wave3 = sin(u * 22.0 - ribbonPhase * 2.0 + seed * 0.7) * (2.0 + laminarFactor * 12.0)
+                    let totalCurl = CGFloat(wave1 + wave2 + wave3) * dirSign
+
+                    // Merkeze doğru termal çekim ve birbirine doğru süzülüş
+                    let centerDrift = dirSign * CGFloat(pow(u, 1.35)) * (size.width * 0.28)
+
+                    let curX = baseX + totalCurl + centerDrift
+
+                    // Sigara dumanının genişlemesi: Altta çok ince (4-8px), üstte tül gibi açılan (45-70px)
+                    let ribbonW = (5.0 + CGFloat(laminarFactor) * 58.0 + CGFloat(sin(u * 10.0 + ribbonPhase) * 8.0))
+
+                    let ptLeft = CGPoint(x: curX - ribbonW * 0.5, y: y)
+                    let ptRight = CGPoint(x: curX + ribbonW * 0.5, y: y)
+                    let ptSpine = CGPoint(x: curX, y: y)
+
+                    spinePoints.append(ptSpine)
+
+                    if step == 0 {
+                        leftPath.move(to: ptLeft)
+                        rightPath.move(to: ptRight)
+                        spinePath.move(to: ptSpine)
+                    } else {
+                        leftPath.addLine(to: ptLeft)
+                        rightPath.addLine(to: ptRight)
+                        spinePath.addLine(to: ptSpine)
+                    }
+                }
+
+                // Kapalı duman şeridi poligonu (Ribbon Mesh)
+                var ribbonMesh = leftPath
+                ribbonMesh.addLine(to: spinePoints.last ?? .zero)
+                // Sağ kenarı yukarıdan aşağıya doğru birleştir
+                var reversedRight = Path()
+                let stepCount = spinePoints.count
+                for step in (0..<stepCount).reversed() {
+                    let u = Double(step) / Double(stepCount - 1)
+                    let y = floorY - CGFloat(u) * (size.height * 0.98)
+                    let laminarFactor = pow(u, 1.45)
+                    let wave1 = sin(u * 7.5 - ribbonPhase + seed) * (14.0 + laminarFactor * 48.0)
+                    let wave2 = cos(u * 14.0 - ribbonPhase * 1.4 + seed * 1.5) * (6.0 + laminarFactor * 26.0)
+                    let wave3 = sin(u * 22.0 - ribbonPhase * 2.0 + seed * 0.7) * (2.0 + laminarFactor * 12.0)
+                    let totalCurl = CGFloat(wave1 + wave2 + wave3) * dirSign
+                    let centerDrift = dirSign * CGFloat(pow(u, 1.35)) * (size.width * 0.28)
+                    let curX = baseX + totalCurl + centerDrift
+                    let ribbonW = (5.0 + CGFloat(laminarFactor) * 58.0 + CGFloat(sin(u * 10.0 + ribbonPhase) * 8.0))
+                    let ptRight = CGPoint(x: curX + ribbonW * 0.5, y: y)
+                    if step == stepCount - 1 {
+                        reversedRight.move(to: ptRight)
+                    } else {
+                        reversedRight.addLine(to: ptRight)
+                    }
+                }
+                ribbonMesh.addPath(reversedRight)
+                ribbonMesh.closeSubpath()
+
+                // Katman 1: Yumuşak difüz duman tülü (Soft Volumetric Smoke Veil)
+                var veilCtx = context
+                veilCtx.addFilter(.blur(radius: 14 + CGFloat(ribbonIdx) * 3))
+                veilCtx.blendMode = .plusLighter
+                veilCtx.opacity = (0.28 - Double(ribbonIdx) * 0.04) * energy
+                veilCtx.fill(
+                    ribbonMesh,
+                    with: .linearGradient(
+                        Gradient(colors: [
+                            side.baseColor.opacity(0.85),
+                            side.glowColor.opacity(0.65),
+                            side.glowColor.opacity(0.20),
+                            .clear
+                        ]),
+                        startPoint: CGPoint(x: baseX, y: floorY),
+                        endPoint: CGPoint(x: cx, y: size.height * 0.05)
+                    )
+                )
+
+                // Katman 2: Sigara dumanının ışığı kıran parlak ince merkez omurgası (Illuminated Filament Spine)
+                var spineCtx = context
+                spineCtx.addFilter(.blur(radius: 2.4 + CGFloat(ribbonIdx) * 0.8))
+                spineCtx.blendMode = .plusLighter
+                spineCtx.opacity = (0.65 - Double(ribbonIdx) * 0.10) * energy
+                spineCtx.stroke(
+                    spinePath,
+                    with: .linearGradient(
+                        Gradient(colors: [
+                            Color.white.opacity(0.95),
+                            side.coreColor.opacity(0.80),
+                            side.baseColor.opacity(0.40),
+                            .clear
+                        ]),
+                        startPoint: CGPoint(x: baseX, y: floorY),
+                        endPoint: CGPoint(x: cx, y: size.height * 0.10)
+                    ),
+                    lineWidth: CGFloat(2.2 - Double(ribbonIdx) * 0.3)
+                )
+
+                // Katman 3: Dumandan kopup dönen helezon girdaplar (Vorticity Smoke Curls)
+                for curlIdx in 0..<5 {
+                    let curlSeed = seed + Double(curlIdx) * 3.41
+                    let uPos = 0.28 + Double(curlIdx) * 0.14
+                    let ptIdx = min(steps, max(0, Int(uPos * Double(steps))))
+                    let vortexCenter = spinePoints[ptIdx]
+
+                    let curlAngleStart = t * 0.45 * Double(dirSign) + curlSeed
+                    var curlPath = Path()
+                    let spiralTurns = 12
+                    let maxRadius: CGFloat = 8.0 + CGFloat(uPos * 28.0)
+
+                    for s in 0...spiralTurns {
+                        let frac = Double(s) / Double(spiralTurns)
+                        let theta = curlAngleStart + frac * .pi * 2.2 * Double(dirSign)
+                        let r = maxRadius * CGFloat(pow(frac, 1.2))
+                        let px = vortexCenter.x + cos(theta) * r
+                        let py = vortexCenter.y + sin(theta) * r * 0.65 - CGFloat(frac * 14.0)
+
+                        if s == 0 {
+                            curlPath.move(to: CGPoint(x: px, y: py))
+                        } else {
+                            curlPath.addLine(to: CGPoint(x: px, y: py))
+                        }
+                    }
+
+                    var curlCtx = context
+                    curlCtx.addFilter(.blur(radius: 4.5))
+                    curlCtx.blendMode = .plusLighter
+                    curlCtx.opacity = (0.35 + sin(t * 0.3 + curlSeed) * 0.12) * energy
+                    curlCtx.stroke(
+                        curlPath,
+                        with: .color(side.coreColor),
+                        lineWidth: 1.5
+                    )
+                }
+            }
+
+            // Taban Sigara / Köz Duman Çıkış Noktası (Base Incandescent Source)
+            var basePointCtx = context
+            basePointCtx.addFilter(.blur(radius: 12))
+            basePointCtx.blendMode = .plusLighter
+            basePointCtx.opacity = 0.70 * energy
+            basePointCtx.fill(
+                Path(ellipseIn: CGRect(x: baseX - 16, y: floorY - 8, width: 32, height: 16)),
+                with: .color(side.baseColor)
+            )
+        }
+
+        // 2. ORTA ALANDA ÇARPIŞAN VE BİRBİRİNE KARIŞAN MOR HELEZONLAR (Center Intertwining Smoke Clouds)
+        for i in 0..<6 {
+            let seed = Double(i) * 3.65
+            let midY = size.height * (0.24 + CGFloat(i) * 0.10) + CGFloat(sin(t * 0.18 + seed)) * 18.0
+            let driftX = cx + CGFloat(sin(t * 0.22 + seed)) * (size.width * 0.12)
+            let puffW = size.width * (0.36 + CGFloat(sin(t * 0.14 + seed)) * 0.08)
+            let puffH = 60.0 + CGFloat(cos(t * 0.19 + seed)) * 16.0
+
+            var mixCtx = context
+            mixCtx.addFilter(.blur(radius: 26))
+            mixCtx.blendMode = .plusLighter
+            mixCtx.opacity = (0.26 + sin(t * 0.24 + seed) * 0.08) * energy
+
+            mixCtx.fill(
+                Path(ellipseIn: CGRect(x: driftX - puffW * 0.5, y: midY - puffH * 0.5, width: puffW, height: puffH)),
+                with: .radialGradient(
+                    Gradient(colors: [
+                        Color(hex: 0xBA68C8).opacity(0.75), // Lila / Mor Duman Karışımı
+                        Color(hex: 0x7E57C2).opacity(0.45),
+                        Color(hex: 0x00E5FF).opacity(0.15),
+                        .clear
+                    ]),
+                    center: CGPoint(x: driftX, y: midY),
+                    startRadius: 0,
+                    endRadius: puffW * 0.55
+                )
+            )
+        }
+
+        // 3. ZEMİN SİS VE YANSIMA KATMANI (Floor Ambient Glow)
+        var floorGlow = context
+        floorGlow.addFilter(.blur(radius: 32))
+        floorGlow.blendMode = .plusLighter
+        floorGlow.opacity = 0.32 * energy
+        floorGlow.fill(
+            Path(ellipseIn: CGRect(x: size.width * 0.08, y: floorY - 12, width: size.width * 0.84, height: 28)),
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(hex: 0xFF007F).opacity(0.6),
+                    Color(hex: 0x7C4DFF).opacity(0.4),
+                    Color(hex: 0x00E5FF).opacity(0.6)
+                ]),
+                startPoint: CGPoint(x: size.width * 0.08, y: floorY),
+                endPoint: CGPoint(x: size.width * 0.92, y: floorY)
+            )
+        )
+
+        // 4. DUMAN İÇİNDE HAVALANAN MİKRO IŞILTI KIVILCIMLARI (Airborne Micro-Sparks)
+        for i in 0..<16 {
+            let seed = Double(i) * 5.43
+            let isLeft = (i % 2 == 0)
+            let riseProg = (t * 0.12 + seed * 0.12).truncatingRemainder(dividingBy: 1.0)
+            let sparkY = floorY - CGFloat(riseProg) * (size.height * 0.84)
+            let baseX = isLeft ? size.width * 0.16 : size.width * 0.84
+            let drift = sin(riseProg * 7.0 + seed) * (28.0 + riseProg * 35.0)
+            let dirSign: CGFloat = isLeft ? 1.0 : -1.0
+            let sparkX = baseX + CGFloat(drift) + (dirSign * CGFloat(pow(riseProg, 1.4)) * (size.width * 0.22))
+
+            let r = CGFloat(1.2 + (sin(seed) * 0.5 + 0.5) * 1.8)
+
+            var sparkCtx = context
+            sparkCtx.addFilter(.blur(radius: 1.5))
+            sparkCtx.blendMode = .plusLighter
+            sparkCtx.opacity = (0.50 + sin(t * 0.6 + seed) * 0.35) * energy
+
+            let sparkCol = isLeft ? Color(hex: 0xFF80AB) : Color(hex: 0x80D8FF)
+            sparkCtx.fill(
+                Path(ellipseIn: CGRect(x: sparkX - r, y: sparkY - r, width: r * 2, height: r * 2)),
+                with: .color(sparkCol)
+            )
+        }
+    }
+
+    // MARK: - 10. Renkli Lav Tüpü & Akışkan Magma Lambası (Bioluminescent Lava Tube)
+    // Fizik tabanlı akışkan magma: tabandan uzayarak KOPMA (Pinch-off / Snapping) efekti,
+    // havada karşılaşan kürelerin ÇARPMA VE BÜYÜME (Collision, Coalescence & Radial Expansion) dinamikleri.
+    private func drawBioluminescentLavaTube(
+        context: inout GraphicsContext,
+        size: CGSize,
+        t: Double,
+        colors: ContextGradient,
+        energy: Double
+    ) {
+        let cx = size.width * 0.5
+        let tubeW = min(size.width * 0.84, 400.0)
+        let tubeLeft = cx - tubeW * 0.5
+        let tubeRight = cx + tubeW * 0.5
+        let topY = size.height * 0.08
+        let bottomY = size.height * 0.90
+        let tubeH = bottomY - topY
+
+        // 1. Cam Silindir Çerçevesi & Ambient İç Aydınlatma (Glass Tube Walls & Fluid Ambience)
+        var glassCtx = context
+        glassCtx.addFilter(.blur(radius: 3.5))
+        glassCtx.blendMode = .plusLighter
+        glassCtx.opacity = 0.45 * energy
+
+        var leftWall = Path()
+        leftWall.move(to: CGPoint(x: tubeLeft, y: topY))
+        leftWall.addLine(to: CGPoint(x: tubeLeft, y: bottomY))
+        glassCtx.stroke(
+            leftWall,
+            with: .linearGradient(
+                Gradient(colors: [.clear, Color(hex: 0xFF3D00).opacity(0.85), Color(hex: 0xFF007F).opacity(0.85), .clear]),
+                startPoint: CGPoint(x: tubeLeft, y: topY),
+                endPoint: CGPoint(x: tubeLeft, y: bottomY)
+            ),
+            lineWidth: 2.2
+        )
+
+        var rightWall = Path()
+        rightWall.move(to: CGPoint(x: tubeRight, y: topY))
+        rightWall.addLine(to: CGPoint(x: tubeRight, y: bottomY))
+        glassCtx.stroke(
+            rightWall,
+            with: .linearGradient(
+                Gradient(colors: [.clear, Color(hex: 0xD500F9).opacity(0.85), Color(hex: 0x00E5FF).opacity(0.85), .clear]),
+                startPoint: CGPoint(x: tubeRight, y: topY),
+                endPoint: CGPoint(x: tubeRight, y: bottomY)
+            ),
+            lineWidth: 2.2
+        )
+
+        // İç akışkan ambient mor/erik ışıltısı
+        var fluidBg = context
+        fluidBg.addFilter(.blur(radius: 50))
+        fluidBg.blendMode = .plusLighter
+        fluidBg.opacity = 0.26 * energy
+        fluidBg.fill(
+            Path(roundedRect: CGRect(x: tubeLeft + 15, y: topY + 15, width: tubeW - 30, height: tubeH - 30), cornerRadius: 40),
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(hex: 0x31003D),
+                    Color(hex: 0x4A0033),
+                    Color(hex: 0x1A052E)
+                ]),
+                startPoint: CGPoint(x: cx, y: topY),
+                endPoint: CGPoint(x: cx, y: bottomY)
+            )
+        )
+
+        // 2. TABANDAN UZAYIP KOPMA EFEKTİ (Bottom Necking, Pinch-Off & Satellite Droplet Snap)
+        // Sıcak tabandan yükselen magma damlası yukarı doğru uzar, incelir (boyun yapar) ve KOPARAK fırlar
+        let snapPeriod = 8.5
+        let snapProg = (t / snapPeriod).truncatingRemainder(dividingBy: 1.0) // 0.0 -> 1.0 döngü
+        let baseHeaterY = bottomY - 18.0
+
+        if snapProg < 0.50 {
+            // EVRE 1: Boyun Yapma ve Yukarı Uzama (Necking & Stretching)
+            let stretchRatio = snapProg / 0.50 // 0.0 -> 1.0
+            let domeH = 40.0 + CGFloat(stretchRatio * 150.0)
+            let domeY = baseHeaterY - domeH
+            let domeX = cx + CGFloat(sin(t * 0.3)) * 25.0
+            let domeRadius: CGFloat = 32.0 + CGFloat(sin(stretchRatio * .pi)) * 12.0
+            let neckW = max(3.5, CGFloat(34.0 * (1.0 - stretchRatio * 0.92))) // İyice incelen boyun!
+
+            // Gövde ile taban arasındaki incelen akışkan boyun köprüsü
+            var neckPath = Path()
+            neckPath.move(to: CGPoint(x: domeX - neckW * 0.5, y: domeY))
+            neckPath.addQuadCurve(
+                to: CGPoint(x: cx - 42.0, y: baseHeaterY),
+                control: CGPoint(x: domeX - neckW * 0.8, y: (domeY + baseHeaterY) * 0.55)
+            )
+            neckPath.addLine(to: CGPoint(x: cx + 42.0, y: baseHeaterY))
+            neckPath.addQuadCurve(
+                to: CGPoint(x: domeX + neckW * 0.5, y: domeY),
+                control: CGPoint(x: domeX + neckW * 0.8, y: (domeY + baseHeaterY) * 0.55)
+            )
+            neckPath.closeSubpath()
+
+            var neckCtx = context
+            neckCtx.addFilter(.blur(radius: 8))
+            neckCtx.blendMode = .plusLighter
+            neckCtx.opacity = 0.85 * energy
+            neckCtx.fill(
+                neckPath,
+                with: .linearGradient(
+                    Gradient(colors: [Color(hex: 0xFFEA00), Color(hex: 0xFF3D00), Color(hex: 0xD500F9)]),
+                    startPoint: CGPoint(x: domeX, y: domeY),
+                    endPoint: CGPoint(x: cx, y: baseHeaterY)
+                )
+            )
+
+            // Uzayan üst küre başlığı
+            var domeCtx = context
+            domeCtx.addFilter(.blur(radius: 7))
+            domeCtx.blendMode = .plusLighter
+            domeCtx.opacity = 0.90 * energy
+            domeCtx.fill(
+                Path(ellipseIn: CGRect(x: domeX - domeRadius, y: domeY - domeRadius * 1.15, width: domeRadius * 2, height: domeRadius * 2.3)),
+                with: .radialGradient(
+                    Gradient(colors: [Color.white, Color(hex: 0xFFEA00), Color(hex: 0xFF3D00), .clear]),
+                    center: CGPoint(x: domeX, y: domeY),
+                    startRadius: 0,
+                    endRadius: domeRadius * 1.15
+                )
+            )
+        } else {
+            // EVRE 2: KOPMA ANI VE YAYLANARAK YÜKSELİŞ (The Snap, Recoil & Detached Rising Blob)
+            let postSnapRatio = (snapProg - 0.50) / 0.50 // 0.0 -> 1.0
+            // Boyun koptuğu anda tabanın geri yaylanması (elastic recoil)
+            let recoil = exp(-postSnapRatio * 6.0) * sin(postSnapRatio * .pi * 5.0) * 16.0
+
+            // Kopan ve serbestçe yükselen magma damlası
+            let detachedY = (baseHeaterY - 190.0) - CGFloat(postSnapRatio * (tubeH * 0.55))
+            let detachedX = cx + CGFloat(sin(t * 0.4)) * 35.0
+            // Sıvı yüzey gerilimi osilasyonu (damla şekil değiştirerek yaylanır)
+            let wobble = sin(postSnapRatio * .pi * 8.0) * 0.22
+            let curRx = 38.0 * (1.0 - wobble)
+            let curRy = 38.0 * (1.0 + wobble)
+
+            // Kopan damla gövdesi
+            var blobCtx = context
+            blobCtx.addFilter(.blur(radius: 8))
+            blobCtx.blendMode = .plusLighter
+            blobCtx.opacity = 0.92 * energy
+            blobCtx.fill(
+                Path(ellipseIn: CGRect(x: detachedX - curRx, y: detachedY - curRy, width: curRx * 2, height: curRy * 2)),
+                with: .radialGradient(
+                    Gradient(colors: [Color.white, Color(hex: 0xFFEA00), Color(hex: 0xFF3D00), Color(hex: 0xD500F9).opacity(0.3), .clear]),
+                    center: CGPoint(x: detachedX, y: detachedY),
+                    startRadius: 0,
+                    endRadius: max(curRx, curRy)
+                )
+            )
+
+            // Kopma anında fırlayan küçük uydu damlacık (Satellite Snap Droplet)
+            if postSnapRatio < 0.35 {
+                let satelliteY = detachedY + 45.0 + CGFloat(postSnapRatio * 30.0)
+                let satR: CGFloat = max(1.5, 4.5 * CGFloat(1.0 - postSnapRatio / 0.35))
+                var satCtx = context
+                satCtx.addFilter(.blur(radius: 2))
+                satCtx.blendMode = .plusLighter
+                satCtx.opacity = 0.95 * energy
+                satCtx.fill(
+                    Path(ellipseIn: CGRect(x: detachedX - satR, y: satelliteY - satR, width: satR * 2, height: satR * 2)),
+                    with: .color(Color(hex: 0xFFEA00))
+                )
+            }
+
+            // Taban rezervuarının kopma sonrası sönümlenen geri tepmesi (Base Recoil)
+            var baseRecoilCtx = context
+            baseRecoilCtx.addFilter(.blur(radius: 12))
+            baseRecoilCtx.blendMode = .plusLighter
+            baseRecoilCtx.opacity = 0.80 * energy
+            baseRecoilCtx.fill(
+                Path(ellipseIn: CGRect(x: cx - 45, y: baseHeaterY - 15 - CGFloat(recoil), width: 90, height: 30 + CGFloat(recoil * 0.5))),
+                with: .color(Color(hex: 0xFF3D00))
+            )
+        }
+
+        // Taban Isıtıcı Havuz Bloğu (Molten Base Pool)
+        var basePoolCtx = context
+        basePoolCtx.addFilter(.blur(radius: 22))
+        basePoolCtx.blendMode = .plusLighter
+        basePoolCtx.opacity = 0.85 * energy
+        basePoolCtx.fill(
+            Path(ellipseIn: CGRect(x: tubeLeft + 10, y: bottomY - 32, width: tubeW - 20, height: 50)),
+            with: .color(Color(hex: 0xFF3D00))
+        )
+
+        // 3. SÜZÜLEN MAGMA KÜRELERİ (Floating Magma Blobs Data)
+        struct LavaBlobState {
+            let id: Int
+            let baseProg: Double
+            let relX: Double
+            let baseR: CGFloat
+            let speed: Double
+            let mainColor: Color
+            let coreColor: Color
+        }
+
+        let floatingBlobs: [LavaBlobState] = [
+            LavaBlobState(id: 1, baseProg: 0.12, relX: -0.24, baseR: 54, speed: 0.08, mainColor: Color(hex: 0xFF007F), coreColor: Color(hex: 0xFF80AB)),
+            LavaBlobState(id: 2, baseProg: 0.35, relX: 0.22,  baseR: 62, speed: 0.09, mainColor: Color(hex: 0xD500F9), coreColor: Color(hex: 0xEA80FC)),
+            LavaBlobState(id: 3, baseProg: 0.58, relX: -0.06, baseR: 68, speed: 0.07, mainColor: Color(hex: 0xFF3D00), coreColor: Color(hex: 0xFFEA00)),
+            LavaBlobState(id: 4, baseProg: 0.78, relX: 0.16,  baseR: 50, speed: 0.11, mainColor: Color(hex: 0x00E5FF), coreColor: Color(hex: 0xB2EBF2)),
+            LavaBlobState(id: 5, baseProg: 0.42, relX: -0.32, baseR: 40, speed: 0.12, mainColor: Color(hex: 0xFF6D00), coreColor: Color(hex: 0xFFD54F)),
+            LavaBlobState(id: 6, baseProg: 0.88, relX: 0.28,  baseR: 46, speed: 0.10, mainColor: Color(hex: 0xAA00FF), coreColor: Color(hex: 0xE1BEE7))
+        ]
+
+        // Hesaplanan anlık pozisyon ve boyutlar
+        struct ComputedBlob {
+            let state: LavaBlobState
+            var center: CGPoint
+            var currentRadius: CGFloat
+            var growthRatio: CGFloat
+        }
+
+        var computed: [ComputedBlob] = []
+
+        for b in floatingBlobs {
+            let phase = t * b.speed + b.baseProg * (.pi * 2.0)
+            let cycle = sin(phase)
+            let normY = (cycle * 0.5 + 0.5) // 0 (alt) -> 1 (üst)
+            let curY = bottomY - 50.0 - CGFloat(normY) * (tubeH - 100.0)
+
+            let sway = sin(t * 0.14 + Double(b.id) * 1.6) * 24.0
+            let curX = cx + CGFloat(b.relX) * (tubeW * 0.36) + CGFloat(sway)
+
+            computed.append(ComputedBlob(state: b, center: CGPoint(x: curX, y: curY), currentRadius: b.baseR, growthRatio: 1.0))
+        }
+
+        // 4. ÇARPMA VE BÜYÜME DİNAMİĞİ (Collision Detection, Coalescence & Expansion)
+        // İki magma küresi birbirine çarptığında:
+        // a) Yarıçapları birleşerek büyür ("büyüme efekti")
+        // b) Aralarında organik akışkan metaball köprüsü oluşur
+        // c) Çarpma noktasında termal enerji parlaması (flare) meydana gelir
+        for i in 0..<computed.count {
+            for j in (i + 1)..<computed.count {
+                let p1 = computed[i].center
+                let p2 = computed[j].center
+                let dist = hypot(p1.x - p2.x, p1.y - p2.y)
+                let rSum = computed[i].currentRadius + computed[j].currentRadius
+
+                // Çarpışma ve temas mesafesi
+                if dist < (rSum + 28.0) {
+                    let overlap = max(0.0, 1.0 - (dist / (rSum + 28.0)))
+                    let growthBoost = CGFloat(overlap * 0.38) // %38'e varan çarpışma büyümesi!
+
+                    computed[i].growthRatio += growthBoost
+                    computed[j].growthRatio += growthBoost
+
+                    // Organik akışkan köprü (Metaball Neck Fusion)
+                    let midP = CGPoint(x: (p1.x + p2.x) * 0.5, y: (p1.y + p2.y) * 0.5)
+                    let bridgeWidth = (rSum * 0.48) * CGFloat(overlap)
+
+                    var bridgeCtx = context
+                    bridgeCtx.addFilter(.blur(radius: 11))
+                    bridgeCtx.blendMode = .plusLighter
+                    bridgeCtx.opacity = (0.75 * overlap) * energy
+
+                    var bridgePath = Path()
+                    bridgePath.move(to: p1)
+                    bridgePath.addQuadCurve(to: p2, control: midP)
+                    bridgeCtx.stroke(
+                        bridgePath,
+                        with: .color(computed[i].state.mainColor),
+                        lineWidth: bridgeWidth
+                    )
+
+                    // Çarpışma noktasında yoğunlaşan termal beyaz/sarı ışık patlaması (Impact Flare)
+                    if overlap > 0.40 {
+                        var flareCtx = context
+                        flareCtx.addFilter(.blur(radius: 8))
+                        flareCtx.blendMode = .plusLighter
+                        flareCtx.opacity = Double(overlap) * 0.85 * energy
+                        let flareR = CGFloat(16.0 * overlap)
+                        flareCtx.fill(
+                            Path(ellipseIn: CGRect(x: midP.x - flareR, y: midP.y - flareR, width: flareR * 2, height: flareR * 2)),
+                            with: .color(Color(hex: 0xFFFFF0))
+                        )
+                    }
+                }
+            }
+        }
+
+        // 5. BÜYÜMÜŞ VE ŞEKİLLENMİŞ MAGMA KÜRELERİNİ ÇİZ (Render Coalesced Magma Blobs)
+        for b in computed {
+            let finalR = b.currentRadius * b.growthRatio
+            let curX = b.center.x
+            let curY = b.center.y
+
+            // Dikey hız uzaması (viscous squash & stretch)
+            let velocity = cos(t * b.state.speed + b.state.baseProg * (.pi * 2.0))
+            let stretchY = 1.0 + abs(velocity) * 0.28
+            let squashX = 1.0 - abs(velocity) * 0.18
+
+            let rx = finalR * CGFloat(squashX)
+            let ry = finalR * CGFloat(stretchY)
+
+            // Dış termal aura
+            var auraCtx = context
+            auraCtx.addFilter(.blur(radius: 24))
+            auraCtx.blendMode = .plusLighter
+            auraCtx.opacity = 0.42 * energy
+            auraCtx.fill(
+                Path(ellipseIn: CGRect(x: curX - rx * 1.35, y: curY - ry * 1.35, width: rx * 2.7, height: ry * 2.7)),
+                with: .color(b.state.mainColor)
+            )
+
+            // Magma gövdesi (erimiş renk gradyanı)
+            var blobCtx = context
+            blobCtx.addFilter(.blur(radius: 9))
+            blobCtx.blendMode = .plusLighter
+            blobCtx.opacity = 0.82 * energy
+            blobCtx.fill(
+                Path(ellipseIn: CGRect(x: curX - rx, y: curY - ry, width: rx * 2, height: ry * 2)),
+                with: .radialGradient(
+                    Gradient(colors: [
+                        b.state.coreColor,
+                        b.state.mainColor,
+                        b.state.mainColor.opacity(0.35),
+                        .clear
+                    ]),
+                    center: CGPoint(x: curX, y: curY),
+                    startRadius: 0,
+                    endRadius: max(rx, ry)
+                )
+            )
+
+            // Akkor sıcak çekirdek
+            var coreCtx = context
+            coreCtx.addFilter(.blur(radius: 3))
+            coreCtx.blendMode = .plusLighter
+            coreCtx.opacity = 0.90 * energy
+            coreCtx.fill(
+                Path(ellipseIn: CGRect(x: curX - rx * 0.38, y: curY - ry * 0.38, width: rx * 0.76, height: ry * 0.76)),
+                with: .color(Color.white)
+            )
+        }
+
+        // 6. ÜST SOĞUMA HAVUZU (Top Cooling Liquid Cap)
+        var topCapCtx = context
+        topCapCtx.addFilter(.blur(radius: 20))
+        topCapCtx.blendMode = .plusLighter
+        topCapCtx.opacity = 0.55 * energy
+        topCapCtx.fill(
+            Path(ellipseIn: CGRect(x: tubeLeft + 15, y: topY - 15, width: tubeW - 30, height: 40)),
+            with: .color(Color(hex: 0x9C27B0))
+        )
+
+        // 7. YAVAŞÇA YÜKSELEN MİKRO SIVI KABARCIKLARI (Rising Micro-Bubbles)
+        for i in 0..<12 {
+            let seed = Double(i) * 6.81
+            let bubbleProg = (t * 0.14 + seed * 0.12).truncatingRemainder(dividingBy: 1.0)
+            let by = bottomY - CGFloat(bubbleProg) * (tubeH * 0.90)
+            let bx = cx + sin(bubbleProg * 6.5 + seed) * (tubeW * 0.36)
+            let br: CGFloat = 1.8 + CGFloat(sin(seed)) * 1.4
+
+            var bubbleCtx = context
+            bubbleCtx.addFilter(.blur(radius: 1.2))
+            bubbleCtx.blendMode = .plusLighter
+            bubbleCtx.opacity = (0.50 + sin(t * 0.45 + seed) * 0.30) * energy
+
+            bubbleCtx.fill(
+                Path(ellipseIn: CGRect(x: bx - br, y: by - br, width: br * 2, height: br * 2)),
+                with: .color(Color(hex: 0xFFEA00))
+            )
+        }
+    }
+
+    // MARK: - 11. Dinamik Sahne Işık Oyunları & Spektral Prizmatik Lazer Huzmeleri (Light Show)
+    // Sahne/oda içerisinde ritmik ve büyüleyici şekilde kesişen hacimsel ışık konileri,
+    // lazer huzmeleri, prizmatik renk kırınımları ve dans eden optik yansımalar.
+    private func drawPrismaticLightShowBeams(
+        context: inout GraphicsContext,
+        size: CGSize,
+        t: Double,
+        colors: ContextGradient,
+        energy: Double
+    ) {
+        let cx = size.width * 0.5
+        let cy = size.height * 0.5
+
+        let beamColors: [Color] = [
+            Color(hex: 0x00F0FF),
+            Color(hex: 0xFF007F),
+            Color(hex: 0x7C4DFF),
+            Color(hex: 0x00E676),
+            Color(hex: 0xFFD600),
+            Color(hex: 0x00B0FF)
+        ]
+
+        // 1. TAVANDAN VE KÖŞELERDEN YAYILAN 6 HACİMSEL IŞIK KONİSİ (Volumetric Searchlight Cones)
+        let beamCount = 6
+        for i in 0..<beamCount {
+            let isTopOrigin = (i < 4)
+
+            let originX = isTopOrigin ? (size.width * (0.15 + Double(i) * 0.24)) : (i == 4 ? -20 : size.width + 20)
+            let originY = isTopOrigin ? -20.0 : size.height * 0.85
+
+            let sweep = sin(t * 0.16 + Double(i) * 1.3) * 0.45 + cos(t * 0.08 + Double(i)) * 0.18
+            let baseAngle: Double
+            if isTopOrigin {
+                baseAngle = .pi * 0.5 + sweep
+            } else {
+                baseAngle = (i == 4 ? -0.4 : -.pi + 0.4) + sweep
+            }
+
+            let beamLength = max(size.width, size.height) * 1.35
+            let endX = originX + cos(baseAngle) * beamLength
+            let endY = originY + sin(baseAngle) * beamLength
+
+            let spreadAngle = 0.14
+            let leftEndX = originX + cos(baseAngle - spreadAngle) * beamLength
+            let leftEndY = originY + sin(baseAngle - spreadAngle) * beamLength
+            let rightEndX = originX + cos(baseAngle + spreadAngle) * beamLength
+            let rightEndY = originY + sin(baseAngle + spreadAngle) * beamLength
+
+            var conePath = Path()
+            conePath.move(to: CGPoint(x: originX, y: originY))
+            conePath.addLine(to: CGPoint(x: leftEndX, y: leftEndY))
+            conePath.addLine(to: CGPoint(x: rightEndX, y: rightEndY))
+            conePath.closeSubpath()
+
+            let col = beamColors[i % beamColors.count]
+
+            var coneCtx = context
+            coneCtx.addFilter(.blur(radius: 28))
+            coneCtx.blendMode = .plusLighter
+            coneCtx.opacity = 0.32 * energy
+
+            coneCtx.fill(
+                conePath,
+                with: .linearGradient(
+                    Gradient(colors: [
+                        col.opacity(0.85),
+                        col.opacity(0.40),
+                        .clear
+                    ]),
+                    startPoint: CGPoint(x: originX, y: originY),
+                    endPoint: CGPoint(x: endX, y: endY)
+                )
+            )
+
+            var laserPath = Path()
+            laserPath.move(to: CGPoint(x: originX, y: originY))
+            laserPath.addLine(to: CGPoint(x: endX, y: endY))
+
+            var laserCtx = context
+            laserCtx.addFilter(.blur(radius: 3.5))
+            laserCtx.blendMode = .plusLighter
+            laserCtx.opacity = 0.75 * energy
+
+            laserCtx.stroke(
+                laserPath,
+                with: .linearGradient(
+                    Gradient(colors: [Color.white, col, .clear]),
+                    startPoint: CGPoint(x: originX, y: originY),
+                    endPoint: CGPoint(x: endX, y: endY)
+                ),
+                lineWidth: 2.4
+            )
+        }
+
+        // 2. ORTA MERKEZDE KESİŞEN OPTİK KIRINIM HALESİ (Optical Caustic Focal Flare)
+        var flareCtx = context
+        flareCtx.addFilter(.blur(radius: 45))
+        flareCtx.blendMode = .plusLighter
+        let flarePulse = sin(t * 0.28) * 0.15
+        flareCtx.opacity = (0.42 + flarePulse) * energy
+        flareCtx.fill(
+            Path(ellipseIn: CGRect(x: cx - 110, y: cy - 70, width: 220, height: 140)),
+            with: .radialGradient(
+                Gradient(colors: [
+                    Color.white.opacity(0.95),
+                    Color(hex: 0x00F0FF).opacity(0.70),
+                    Color(hex: 0xFF007F).opacity(0.35),
+                    .clear
+                ]),
+                center: CGPoint(x: cx, y: cy),
+                startRadius: 0,
+                endRadius: 110
+            )
+        )
+
+        // 3. TARAYAN SPEKTRAL IŞIK DALGALARI (Optical Horizontal Sweep Waves)
+        for i in 0..<4 {
+            let seed = Double(i) * 2.81
+            let scanProg = (t * 0.08 + seed * 0.25).truncatingRemainder(dividingBy: 1.0)
+            let scanY = size.height * CGFloat(scanProg)
+
+            var scanCtx = context
+            scanCtx.addFilter(.blur(radius: 12))
+            scanCtx.blendMode = .plusLighter
+            scanCtx.opacity = (0.24 * (1.0 - abs(scanProg - 0.5) * 1.5)) * energy
+
+            var scanPath = Path()
+            scanPath.move(to: CGPoint(x: 0, y: scanY))
+            scanPath.addLine(to: CGPoint(x: size.width, y: scanY + 15.0))
+
+            scanCtx.stroke(
+                scanPath,
+                with: .linearGradient(
+                    Gradient(colors: [.clear, Color(hex: 0x00E5FF).opacity(0.7), Color(hex: 0xFF007F).opacity(0.7), .clear]),
+                    startPoint: CGPoint(x: 0, y: scanY),
+                    endPoint: CGPoint(x: size.width, y: scanY)
+                ),
+                lineWidth: 2.0
+            )
+        }
+
+        // 4. IŞIK DEMETLERİNDE PARILDAYAN TOZ VE FLARE TANECİKLERİ (Dancing Beam Flares)
+        for i in 0..<20 {
+            let seed = Double(i) * 4.91
+            let px = size.width * (sin(seed * 2.1 + t * 0.05) * 0.45 + 0.5)
+            let py = size.height * (cos(seed * 1.7 + t * 0.04) * 0.45 + 0.5)
+            let r: CGFloat = 1.8 + CGFloat(sin(seed)) * 1.6
+
+            var sparkleCtx = context
+            sparkleCtx.addFilter(.blur(radius: 1.2))
+            sparkleCtx.blendMode = .plusLighter
+            let flash = pow(sin(t * 0.6 + seed) * 0.5 + 0.5, 3.0)
+            sparkleCtx.opacity = (0.20 + flash * 0.70) * energy
+
+            sparkleCtx.fill(
+                Path(ellipseIn: CGRect(x: px - r, y: py - r, width: r * 2, height: r * 2)),
+                with: .color(Color.white)
             )
         }
     }

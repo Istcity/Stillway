@@ -83,6 +83,18 @@ struct ContextGradient: Equatable, Sendable {
                     cardTint: Color(hex: 0x3D160B).opacity(0.65)
                 )
 
+            // Cyber Neon Smoke & Dual Light Tubes (User Image)
+            case "neon_vapor":
+                return gradient(for: .neonSmoke)
+
+            // Bioluminescent Lava Tube & Magma Lamp
+            case "lava_tube":
+                return gradient(for: .lavaTube)
+
+            // Dynamic Prismatic Light Show & Laser Beams
+            case "prism_light":
+                return gradient(for: .lightShow)
+
             // Polar Aurora & Cosmic Deep Night (Screenshot 4)
             case "aurora_ocean", "silent_snow", "moonlit_dunes", "night_forest", "tokyo_rain":
                 return ContextGradient(
@@ -98,6 +110,57 @@ struct ContextGradient: Equatable, Sendable {
             }
         }
         return gradient(for: context)
+    }
+
+    static func gradient(for atmosphere: AtmosphereKind) -> ContextGradient {
+        switch atmosphere {
+        case .neonSmoke:
+            return ContextGradient(
+                bgColors: [Color(hex: 0x06020E), Color(hex: 0x110521), Color(hex: 0x070A1E)],
+                waveColors: [Color(hex: 0xFF007F), Color(hex: 0x00E5FF), Color(hex: 0xD500F9)],
+                accentColor: Color(hex: 0xFF007F),
+                glowColor: Color(hex: 0x00E5FF).opacity(0.55),
+                cardTint: Color(hex: 0x110521).opacity(0.70)
+            )
+        case .lavaTube:
+            return ContextGradient(
+                bgColors: [Color(hex: 0x14001A), Color(hex: 0x2A052D), Color(hex: 0x1A031E)],
+                waveColors: [Color(hex: 0xFF3D00), Color(hex: 0xFF007F), Color(hex: 0xFFD600)],
+                accentColor: Color(hex: 0xFF3D00),
+                glowColor: Color(hex: 0xFF007F).opacity(0.52),
+                cardTint: Color(hex: 0x2A052D).opacity(0.70)
+            )
+        case .lightShow:
+            return ContextGradient(
+                bgColors: [Color(hex: 0x030517), Color(hex: 0x0A0F30), Color(hex: 0x05081E)],
+                waveColors: [Color(hex: 0x00E5FF), Color(hex: 0x7C4DFF), Color(hex: 0x00E676)],
+                accentColor: Color(hex: 0x00E5FF),
+                glowColor: Color(hex: 0x7C4DFF).opacity(0.55),
+                cardTint: Color(hex: 0x0A0F30).opacity(0.70)
+            )
+        case .aurora:
+            return gradient(for: "aurora_ocean", context: .sleep)
+        case .rain:
+            return gradient(for: "tokyo_rain", context: .focus)
+        case .lava:
+            return gradient(for: "shinkansen", context: .commute)
+        case .stream:
+            return gradient(for: "rain_window", context: .reset)
+        case .mist:
+            return gradient(for: "study_cat", context: .focus)
+        case .ember:
+            return gradient(for: "hygge_night", context: .deepWork)
+        case .snow:
+            return ContextGradient(
+                bgColors: [Color(hex: 0x060B18), Color(hex: 0x0C182B), Color(hex: 0x08101E)],
+                waveColors: [Color(hex: 0x80D8FF), Color(hex: 0xB3E5FC), Color(hex: 0xE1F5FE)],
+                accentColor: Color(hex: 0x80D8FF),
+                glowColor: Color(hex: 0x80D8FF).opacity(0.45),
+                cardTint: Color(hex: 0x0C182B).opacity(0.65)
+            )
+        case .prism:
+            return gradient(for: "healing_528hz", context: .walking)
+        }
     }
 
     static func gradient(for context: AppContext) -> ContextGradient {

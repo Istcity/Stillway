@@ -63,13 +63,19 @@ struct Sound: Identifiable, Equatable, Hashable, Codable, Sendable {
 
     func localizedTitle(using lm: LocalizationManager) -> String {
         let val = lm.string(localizationKey)
-        return val == localizationKey ? title : val
+        if val == localizationKey || val.contains("_") {
+            return title
+        }
+        return val
     }
 
     func localizedSubtitle(using lm: LocalizationManager) -> String {
         let subKey = "\(localizationKey)_sub"
         let val = lm.string(subKey)
-        return val == subKey ? subtitle : val
+        if val == subKey || val.contains("_") {
+            return subtitle
+        }
+        return val
     }
 
     /// SF Symbol used in the sound picker and mixer.
@@ -117,12 +123,22 @@ struct Sound: Identifiable, Equatable, Hashable, Codable, Sendable {
             return "flame.fill"
         case "healing_528hz":
             return "heart.circle.fill"
+        case "neon_vapor":
+            return "smoke.fill"
+        case "lava_tube":
+            return "drop.fill"
+        case "prism_light":
+            return "rays"
         default:
             return "waveform"
         }
     }
 
     static let library: [Sound] = [
+        Sound(id: "neon_vapor", localizationKey: "snd_neon_vapor", fileName: "tokyo_rain", context: .focus, region: .URBAN, isFree: true, defaultVolume: 0.65, title: "Siber Neon Duman", subtitle: "Sağdan ve soldan yükselen renkli dumanlar ve tavan ışıkları"),
+        Sound(id: "lava_tube", localizationKey: "snd_lava_tube", fileName: "deep_train", context: .commute, region: .URBAN, isFree: true, defaultVolume: 0.65, title: "Renkli Lav Tüpü", subtitle: "Akışkan magma süzülüşü ve hipnotik lav tüpü dinginliği"),
+        Sound(id: "prism_light", localizationKey: "snd_prism_light", fileName: "healing_528hz", context: .reset, region: .URBAN, isFree: true, defaultVolume: 0.60, title: "Işık Oyunları & Lazer", subtitle: "Spektral ışık kırınımları ve dinamik sahne huzmeleri"),
+
         Sound(id: "tokyo_metro", localizationKey: "snd_tokyo_metro", fileName: "tokyo_metro", context: .commute, region: .JP, isFree: false, defaultVolume: 0.7, title: "Yeraltı Tüneli", subtitle: "Kemerli tünel sıcaklığı ve akustik derinlik"),
         Sound(id: "deep_train", localizationKey: "snd_deep_train", fileName: "deep_train", context: .commute, region: .URBAN, isFree: true, defaultVolume: 0.7, title: "Gece Ekspresi", subtitle: "Hipnotik demir raylar ve fener sıcaklığı"),
         Sound(id: "shinkansen", localizationKey: "snd_shinkansen", fileName: "shinkansen", context: .commute, region: .JP, isFree: false, defaultVolume: 0.7, title: "Aerodinamik Ray", subtitle: "Manyetik hat akışı ve fütüristik hız dinginliği"),

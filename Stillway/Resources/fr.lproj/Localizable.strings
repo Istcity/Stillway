@@ -91,7 +91,7 @@
 
 "onboard_1_title" = "Stillway s'accorde à votre rythme.";
 "onboard_1_body" = "L'application perçoit vos déplacements et votre quotidien. La bonne atmosphère sonore démarre sans aucune manipulation.";
-"onboard_1_btn" = "Autoriser la Localisation";
+"onboard_1_btn" = "Continuer";
 "onboard_2_title" = "Gardez l'esprit libre.";
 "onboard_2_body" = "Dès que vous connectez vos AirPods et approchez d'une station, Stillway s'active de manière fluide.";
 "onboard_2_btn" = "Configurer le Raccourci";
@@ -174,3 +174,28 @@
 "toast_stopped" = "En pause";
 "toast_demo_noise" = "Fichier audio manquant — tonalité de démo en cours.";
 "auto_banner" = "Session intelligente démarrée";
+
+// New Atmospheric Themes & Sounds
+"snd_neon_vapor" = "Fumée Néon Cyber";
+"snd_neon_vapor_sub" = "Panaches de vapeur néon bilatéraux et faisceaux lumineux zénithaux";
+"snd_lava_tube" = "Tube de Lave Magma";
+"snd_lava_tube_sub" = "Convection de magma fluide et lampe à lave hypnotique";
+"snd_prism_light" = "Jeux de Lumière & Laser";
+"snd_prism_light_sub" = "Projecteurs volumétriques, lasers et réfractions optiques";
+
+"settings_atmosphere" = "Atmosphères & Thèmes";
+"settings_atmosphere_title" = "Thème Visuel";
+"settings_atmosphere_desc" = "Change avec le son ou fixez votre thème visuel préféré.";
+"atmo_auto" = "Auto";
+"atmo_reset_auto" = "Réinitialiser";
+"atmo_aurora" = "Aurore Polaire";
+"atmo_rain" = "Pluie Nocturne";
+"atmo_lava" = "Transit Rapide";
+"atmo_stream" = "Brume Océanique";
+"atmo_mist" = "Ouverture Lumineuse";
+"atmo_ember" = "Braises de Foyer";
+"atmo_snow" = "Neige Silencieuse";
+"atmo_prism" = "Halo Prismatique";
+"atmo_neon_smoke" = "Fumée Cyber";
+"atmo_lava_tube" = "Tube de Lave";
+"atmo_light_show" = "Jeux de Lumière";

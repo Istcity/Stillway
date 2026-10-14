@@ -17,27 +17,26 @@ struct ContentRootView: View {
     }
 
     private var isProUser: Bool {
-        true // Paid App upfront model: user purchased on App Store before download
+        store.isPro || StillwayTesting.unlockAllFeatures
     }
 
     var body: some View {
         ZStack {
             if CommandLine.arguments.contains("-forcePaywall") || forceShowPaywall {
-                ProPaywallView()
-                    .transition(.opacity)
+                ProPaywallView(onDismiss: {
+                    forceShowPaywall = false
+                })
+                .transition(.opacity)
             } else if !hasCompletedOnboarding {
                 OnboardingView()
                     .transition(.opacity)
-            } else if isProUser {
-                MainView()
-                    .transition(.opacity)
             } else {
-                ProPaywallView()
+                MainView()
                     .transition(.opacity)
             }
         }
+        .id(lm.currentLanguage)
         .animation(reduceMotion ? .none : .easeInOut(duration: 0.8), value: hasCompletedOnboarding)
-        .animation(reduceMotion ? .none : .easeInOut(duration: 0.8), value: isProUser)
         .animation(reduceMotion ? .none : .easeInOut(duration: 0.8), value: forceShowPaywall)
         .sheet(isPresented: Bindable(runtime).showPlaceLabel) {
             PlaceLabelSheet()

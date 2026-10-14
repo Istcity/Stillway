@@ -181,7 +181,7 @@ struct SoundPickerSheet: View {
         if locked {
             dismiss()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                runtime.showSettings = true
+                runtime.showPaywall = true
             }
             return
         }

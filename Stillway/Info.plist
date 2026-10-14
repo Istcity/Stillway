@@ -26,7 +26,6 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
-		<string>location</string>
 		<string>fetch</string>
 	</array>
 	<key>UIUserInterfaceStyle</key>
@@ -47,9 +46,5 @@
 		<key>UIColorName</key>
 		<string>LaunchBackground</string>
 	</dict>
-	<key>NSHealthShareUsageDescription</key>
-	<string>Stillway synchronizes mindful sessions with Apple Health.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>Stillway saves completed focus and rest sessions as Mindful Minutes in Apple Health.</string>
 </dict>
 </plist>

@@ -13,6 +13,7 @@ struct MainView: View {
         case settings = 1
         case sounds = 2
         case places = 3
+        case paywall = 4
 
         var id: Int { rawValue }
     }
@@ -101,6 +102,10 @@ struct MainView: View {
                 PlacesSheet()
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
+            case .paywall:
+                ProPaywallView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
         }
         .onAppear {
@@ -125,6 +130,12 @@ struct MainView: View {
             if newValue {
                 activeSheet = .places
                 runtime.showPlaces = false
+            }
+        }
+        .onChange(of: runtime.showPaywall) { _, newValue in
+            if newValue {
+                activeSheet = .paywall
+                runtime.showPaywall = false
             }
         }
     }
@@ -340,7 +351,7 @@ struct MainView: View {
                 Image(systemName: runtime.weatherSymbol)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.yellow)
-                Text(runtime.cityName.isEmpty ? "\(runtime.expectedWeatherSummary) • \(runtime.expectedWeatherCondition)" : "\(runtime.cityName) • \(runtime.expectedWeatherSummary)")
+                Text(runtime.cityName.isEmpty ? "\(runtime.localizedWeatherSummary(using: lm)) • \(runtime.localizedWeatherCondition(using: lm))" : "\(runtime.cityName) • \(runtime.localizedWeatherSummary(using: lm))")
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                 Image(systemName: "sparkle")
