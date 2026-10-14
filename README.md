@@ -103,7 +103,7 @@ Until those files exist, `AudioEngine` generates distinct procedural beds. For p
 
 ## Specs
 
-`PRODUCT_SPEC.md` · `DESIGN_SYSTEM.md` · `BUILD_PLAN.md` · `MISSING_AND_TODOS.md`
+`FREEMIUM_LIFETIME_EXECUTION_PLAN.md` · `PRODUCT_SPEC.md` · `DESIGN_SYSTEM.md` · `BUILD_PLAN.md` · `MISSING_AND_TODOS.md`
 
 ## Contributing
 
