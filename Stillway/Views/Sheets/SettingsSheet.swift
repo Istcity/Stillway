@@ -119,13 +119,14 @@ struct SettingsSheet: View {
                                     }
 
                                     ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack(spacing: 8) {
-                                            atmospherePill(
+                                        HStack(spacing: 12) {
+                                            themeCard(
                                                 title: lm.string("atmo_auto"),
                                                 icon: "sparkles",
                                                 isSelected: theme.atmosphereOverride == nil,
-                                                accentColor: accent,
-                                                isLocked: false
+                                                isFree: true,
+                                                isLocked: false,
+                                                gradient: theme.gradient
                                             ) {
                                                 theme.atmosphereOverride = nil
                                             }
@@ -133,12 +134,13 @@ struct SettingsSheet: View {
                                             ForEach(AtmosphereKind.allCases, id: \.self) { kind in
                                                 let isSelected = theme.atmosphereOverride == kind
                                                 let isLocked = !isProActive && !kind.isFree
-                                                atmospherePill(
+                                                themeCard(
                                                     title: kind.displayName(using: lm),
-                                                    icon: isLocked ? "lock.fill" : kind.symbol,
+                                                    icon: kind.symbol,
                                                     isSelected: isSelected,
-                                                    accentColor: accentForKind(kind),
-                                                    isLocked: isLocked
+                                                    isFree: kind.isFree,
+                                                    isLocked: isLocked,
+                                                    gradient: ContextGradient.gradient(for: kind)
                                                 ) {
                                                     if isLocked {
                                                         HapticEngine.warning()
@@ -152,7 +154,8 @@ struct SettingsSheet: View {
                                                 }
                                             }
                                         }
-                                        .padding(.vertical, 2)
+                                        .padding(.vertical, 4)
+                                        .padding(.horizontal, 2)
                                     }
                                 }
                             }
@@ -566,47 +569,154 @@ struct SettingsSheet: View {
             .background(accent.opacity(0.14), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
-    private func atmospherePill(
+    private func themeCard(
         title: String,
         icon: String,
         isSelected: Bool,
-        accentColor: Color,
-        isLocked: Bool = false,
+        isFree: Bool,
+        isLocked: Bool,
+        gradient: ContextGradient,
         action: @escaping () -> Void
     ) -> some View {
         Button {
             HapticEngine.select()
             action()
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(isLocked ? Color.white.opacity(0.4) : (isSelected ? Color.black : Color.white.opacity(0.85)))
-                Text(title)
-                    .font(.system(size: 12, weight: isSelected ? .bold : .medium, design: .rounded))
-                if isLocked {
-                    Text("PRO")
-                        .font(.system(size: 8, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 4)
-                        .padding(.vertical, 2)
-                        .background(Color.white.opacity(0.12), in: Capsule())
-                        .foregroundStyle(Color.white.opacity(0.75))
+            ZStack(alignment: .topTrailing) {
+                // Card Background: Rich themed gradient
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                gradient.bgColors.first ?? Color(hex: 0x0A0F1E),
+                                gradient.cardTint,
+                                Color(hex: 0x05070B)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+
+                // Atmospheric Radial Glow
+                RadialGradient(
+                    colors: [gradient.accentColor.opacity(isSelected ? 0.45 : 0.20), .clear],
+                    center: .center,
+                    startRadius: 5,
+                    endRadius: 80
+                )
+                .allowsHitTesting(false)
+
+                // Inner content
+                VStack(alignment: .leading, spacing: 0) {
+                    // Top Icon Squircle
+                    ZStack {
+                        Circle()
+                            .fill(gradient.accentColor.opacity(0.18))
+                            .frame(width: 38, height: 38)
+                        Image(systemName: isLocked ? "lock.fill" : icon)
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(isLocked ? Color.white.opacity(0.65) : gradient.accentColor)
+                    }
+                    .padding(.top, 14)
+                    .padding(.leading, 14)
+
+                    Spacer()
+
+                    // Bottom Titles & Info
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(title)
+                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(gradient.accentColor)
+                                .frame(width: 5, height: 5)
+                            Text(statusText(isFree: isFree, isLocked: isLocked))
+                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .foregroundStyle(isFree ? Color.green : (isLocked ? Color(red: 0.98, green: 0.82, blue: 0.45) : Color.white.opacity(0.7)))
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.bottom, 14)
+                }
+
+                // Top Status Badge (Active or PRO)
+                if isSelected {
+                    HStack(spacing: 3) {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 8, weight: .bold))
+                        Text(activeBadgeText)
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                    }
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3.5)
+                    .background(gradient.accentColor, in: Capsule())
+                    .padding(10)
+                } else if isLocked {
+                    HStack(spacing: 3) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 8, weight: .bold))
+                        Text("PRO")
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                    }
+                    .foregroundStyle(Color(red: 0.98, green: 0.82, blue: 0.45))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 3)
+                    .background(Color(red: 0.98, green: 0.82, blue: 0.45).opacity(0.18), in: Capsule())
+                    .overlay(Capsule().stroke(Color(red: 0.98, green: 0.82, blue: 0.45).opacity(0.4), lineWidth: 0.8))
+                    .padding(10)
                 }
             }
-            .foregroundStyle(isSelected ? .black : .white.opacity(0.85))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 9)
-            .background(
-                Capsule()
-                    .fill(isSelected ? accentColor : Color.white.opacity(0.08))
-            )
+            .frame(width: 126, height: 168)
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
             .overlay(
-                Capsule()
-                    .stroke(isSelected ? Color.clear : Color.white.opacity(0.12), lineWidth: 0.8)
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(
+                        isSelected ? AnyShapeStyle(gradient.accentColor) : AnyShapeStyle(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.24), Color.white.opacity(0.05)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        ),
+                        lineWidth: isSelected ? 1.8 : 0.9
+                    )
             )
-            .shadow(color: isSelected ? accentColor.opacity(0.4) : .clear, radius: 8)
+            .shadow(color: isSelected ? gradient.accentColor.opacity(0.38) : Color.black.opacity(0.35), radius: isSelected ? 12 : 6, y: 3)
         }
         .buttonStyle(.plain)
+    }
+
+    private func statusText(isFree: Bool, isLocked: Bool) -> String {
+        if isFree {
+            switch lm.currentLanguage {
+            case .tr: return "ÜCRETSİZ"
+            case .ja: return "無料"
+            case .fr: return "GRATUIT"
+            default: return "FREE"
+            }
+        } else if isLocked {
+            return "PRO"
+        } else {
+            switch lm.currentLanguage {
+            case .tr: return "AÇIK"
+            case .ja: return "解除済"
+            case .fr: return "DÉVERROUILLÉ"
+            default: return "UNLOCKED"
+            }
+        }
+    }
+
+    private var activeBadgeText: String {
+        switch lm.currentLanguage {
+        case .tr: return "AKTİF"
+        case .ja: return "有効"
+        case .fr: return "ACTIF"
+        default: return "ACTIVE"
+        }
     }
 
     private func accentForKind(_ kind: AtmosphereKind) -> Color {

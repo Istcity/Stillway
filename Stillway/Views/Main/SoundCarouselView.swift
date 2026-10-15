@@ -7,6 +7,7 @@ struct SoundCarouselView: View {
     let sounds: [Sound]
     let selectedSound: Sound?
     let isPlaying: Bool
+    var isPro: Bool = true
     let onSelectSound: (Sound) -> Void
     let onTogglePlay: () -> Void
 
@@ -99,6 +100,25 @@ struct SoundCarouselView: View {
                                     .foregroundStyle(.white)
                             )
                             .offset(x: 3, y: -3)
+                    } else if !sound.isFree && !isPro {
+                        // Sleek golden Pro lock indicator
+                        HStack(spacing: 2) {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 7, weight: .bold))
+                        }
+                        .foregroundStyle(.black)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 3)
+                        .background(
+                            LinearGradient(
+                                colors: [Color(red: 1.0, green: 0.85, blue: 0.4), Color(red: 0.95, green: 0.68, blue: 0.15)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            in: Capsule()
+                        )
+                        .shadow(color: .black.opacity(0.4), radius: 3)
+                        .offset(x: 4, y: -4)
                     }
                 }
 

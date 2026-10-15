@@ -22,6 +22,14 @@ struct MainView: View {
     @State private var showControls = true
     @State private var isOLEDMode = false
 
+    private enum ClockStyle: String {
+        case dial
+        case tube
+    }
+
+    @State private var clockStyle: ClockStyle = .dial
+    @State private var showTimerPicker = false
+
     private func toggleControls() {
         HapticEngine.tap()
         withAnimation(.spring(response: 0.38, dampingFraction: 0.82)) {
@@ -39,6 +47,10 @@ struct MainView: View {
 
     private var availableSounds: [Sound] {
         Sound.library
+    }
+
+    private var isUserPro: Bool {
+        preferences.first?.isPro == true || StillwayTesting.unlockAllFeatures
     }
 
     var body: some View {
@@ -213,6 +225,7 @@ struct MainView: View {
                         sounds: availableSounds,
                         selectedSound: activeSound,
                         isPlaying: runtime.audio.isPlaying,
+                        isPro: isUserPro,
                         onSelectSound: { sound in
                             selectSound(sound)
                         },
@@ -272,26 +285,27 @@ struct MainView: View {
 
             Spacer(minLength: 20)
 
-            // Center area: Full-width Glowing Atmospheric Horizon + Left Vertical Timer Tube
+            // Center area: Full-width Glowing Atmospheric Horizon + Centerpiece Living Clock
             ZStack(alignment: .center) {
                 // Breathing luminous horizon beam across the entire screen width
                 WaveformView()
                     .frame(height: 54)
-                    .opacity(runtime.audio.isPlaying ? 0.95 : 0.65)
+                    .opacity(runtime.audio.isPlaying ? 0.85 : 0.45)
                     .allowsHitTesting(false)
 
-                HStack(alignment: .center) {
-                    VerticalTimerTube(
-                        progress: ringProgress,
-                        remainingSeconds: runtime.audio.isPlaying ? runtime.audio.remainingSeconds : (runtime.selectedTimerMinutes ?? 30) * 60,
-                        isPlaying: runtime.audio.isPlaying,
-                        context: activeSound.context
-                    ) { minutes in
-                        runtime.selectTimer(minutes)
+                VStack(spacing: 12) {
+                    if clockStyle == .dial {
+                        zenDialCenterpiece
+                            .transition(.scale(scale: 0.92).combined(with: .opacity))
+                    } else {
+                        verticalTubeCenterpiece
+                            .transition(.scale(scale: 0.92).combined(with: .opacity))
                     }
-                    .padding(.leading, 18)
 
-                    Spacer()
+                    if showTimerPicker {
+                        durationPresetsPill
+                            .transition(.scale(scale: 0.95).combined(with: .opacity))
+                    }
                 }
             }
 
@@ -320,6 +334,7 @@ struct MainView: View {
                     sounds: availableSounds,
                     selectedSound: activeSound,
                     isPlaying: runtime.audio.isPlaying,
+                    isPro: isUserPro,
                     onSelectSound: { sound in
                         selectSound(sound)
                     },
@@ -360,8 +375,22 @@ struct MainView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(.ultraThinMaterial.opacity(0.35), in: Capsule())
-            .overlay(Capsule().stroke(theme.gradient.accentColor.opacity(0.55), lineWidth: 1))
+            .background(.ultraThinMaterial.opacity(0.40), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                theme.gradient.accentColor.opacity(0.70),
+                                Color.white.opacity(0.20)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(color: theme.gradient.accentColor.opacity(0.25), radius: 8)
 
             // OLED Bedside Sleep Button
             circleButton(systemName: isOLEDMode ? "moon.stars.fill" : "moon.fill", label: "OLED") {
@@ -407,8 +436,21 @@ struct MainView: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
-            .background(.ultraThinMaterial.opacity(0.35), in: Capsule())
-            .overlay(Capsule().stroke(theme.gradient.accentColor.opacity(0.55), lineWidth: 1))
+            .background(.ultraThinMaterial.opacity(0.40), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                theme.gradient.accentColor.opacity(0.70),
+                                Color.white.opacity(0.20)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
 
             circleButton(systemName: "headphones", label: lm.string("sounds_title")) {
                 activeSheet = .sounds
@@ -426,15 +468,199 @@ struct MainView: View {
             action()
         } label: {
             Image(systemName: systemName)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(.white.opacity(0.75))
-                .frame(width: 40, height: 40)
-                .background(.ultraThinMaterial.opacity(0.35), in: Circle())
-                .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 0.8))
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.85))
+                .frame(width: 42, height: 42)
+                .background(.ultraThinMaterial.opacity(0.40), in: Circle())
+                .overlay(
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.35), Color.white.opacity(0.08)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 0.9
+                        )
+                )
+                .shadow(color: .black.opacity(0.25), radius: 6, y: 2)
         }
         .buttonStyle(.plain)
         .contentShape(Circle())
         .accessibilityLabel(label)
+    }
+
+    // MARK: - Centerpiece Clock & Visual Metaphor Engine
+
+    private var zenDialCenterpiece: some View {
+        Button {
+            HapticEngine.medium()
+            runtime.handleStartStop(preferences: preferences.first)
+        } label: {
+            ZStack {
+                // Ambient Radial Pulse
+                Circle()
+                    .fill(theme.gradient.glowColor.opacity(runtime.audio.isPlaying ? 0.28 : 0.08))
+                    .frame(width: 210, height: 210)
+                    .blur(radius: 24)
+
+                // Outer Frosted Glass Ring with Specular Rim
+                Circle()
+                    .fill(Color.black.opacity(0.38))
+                    .frame(width: 190, height: 190)
+                    .overlay(
+                        Circle()
+                            .stroke(
+                                LinearGradient(
+                                    colors: [
+                                        Color.white.opacity(0.38),
+                                        theme.gradient.accentColor.opacity(0.40),
+                                        Color.white.opacity(0.10)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1.5
+                            )
+                    )
+                    .shadow(color: theme.gradient.accentColor.opacity(runtime.audio.isPlaying ? 0.35 : 0.12), radius: 20)
+
+                // Living Procedural Timer Face (Hourglass, Waterdrop, Sundial, Moon, etc.)
+                TimerFaceView(
+                    kind: TimerFaceKind.resolve(context: activeSound.context),
+                    progress: ringProgress,
+                    seconds: runtime.audio.isPlaying ? runtime.audio.remainingSeconds : (runtime.selectedTimerMinutes ?? 30) * 60
+                )
+                .scaleEffect(0.96)
+
+                // Bottom Miniature Style Switch & Preset Button
+                VStack {
+                    Spacer()
+                    Button {
+                        HapticEngine.tap()
+                        withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                            showTimerPicker.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "timer")
+                                .font(.system(size: 10, weight: .bold))
+                            Text(displayTimerTitle)
+                                .font(.system(size: 11, weight: .semibold, design: .rounded))
+                            Image(systemName: showTimerPicker ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 8, weight: .bold))
+                        }
+                        .foregroundStyle(.white.opacity(0.85))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(.ultraThinMaterial.opacity(0.70), in: Capsule())
+                        .overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 0.8))
+                    }
+                    .buttonStyle(.plain)
+                    .offset(y: 18)
+                }
+                .frame(width: 190, height: 190)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var verticalTubeCenterpiece: some View {
+        VStack(spacing: 8) {
+            VerticalTimerTube(
+                progress: ringProgress,
+                remainingSeconds: runtime.audio.isPlaying ? runtime.audio.remainingSeconds : (runtime.selectedTimerMinutes ?? 30) * 60,
+                isPlaying: runtime.audio.isPlaying,
+                context: activeSound.context,
+                hideTopIcon: false
+            ) { minutes in
+                runtime.selectTimer(minutes)
+            }
+            .frame(height: 200)
+
+            Button {
+                HapticEngine.tap()
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                    showTimerPicker.toggle()
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: "timer")
+                        .font(.system(size: 10, weight: .bold))
+                    Text(displayTimerTitle)
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    Image(systemName: showTimerPicker ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 8, weight: .bold))
+                }
+                .foregroundStyle(.white.opacity(0.85))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(.ultraThinMaterial.opacity(0.70), in: Capsule())
+                .overlay(Capsule().stroke(Color.white.opacity(0.20), lineWidth: 0.8))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var durationPresetsPill: some View {
+        HStack(spacing: 8) {
+            // Style toggle button (Dial vs Tube)
+            Button {
+                HapticEngine.tap()
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                    clockStyle = (clockStyle == .dial) ? .tube : .dial
+                }
+            } label: {
+                Image(systemName: clockStyle == .dial ? "gauge.with.needle" : "hourglass.bottomhalf.filled")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(theme.gradient.accentColor)
+                    .frame(width: 32, height: 32)
+                    .background(Color.white.opacity(0.12), in: Circle())
+            }
+            .buttonStyle(.plain)
+
+            Divider()
+                .frame(height: 18)
+                .overlay(Color.white.opacity(0.25))
+
+            // Presets: 15, 30, 45, 60, ∞
+            ForEach([15, 30, 45, 60], id: \.self) { mins in
+                presetButton(title: "\(mins)\(lm.string("timer_min"))", minutes: mins)
+            }
+            presetButton(title: "∞", minutes: nil)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial.opacity(0.65), in: Capsule())
+        .overlay(Capsule().stroke(Color.white.opacity(0.18), lineWidth: 0.8))
+        .shadow(color: .black.opacity(0.35), radius: 10, y: 4)
+    }
+
+    private func presetButton(title: String, minutes: Int?) -> some View {
+        let isSelected = runtime.selectedTimerMinutes == minutes
+        return Button {
+            HapticEngine.select()
+            runtime.selectTimer(minutes)
+        } label: {
+            Text(title)
+                .font(.system(size: 12, weight: isSelected ? .bold : .medium, design: .rounded))
+                .foregroundStyle(isSelected ? .white : .white.opacity(0.70))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(
+                    isSelected ? theme.gradient.accentColor.opacity(0.85) : Color.white.opacity(0.06),
+                    in: Capsule()
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var displayTimerTitle: String {
+        if let mins = runtime.selectedTimerMinutes {
+            return "\(mins) \(lm.string("timer_min"))"
+        } else {
+            return "∞"
+        }
     }
 
     // MARK: - Context Dropdown Capsule (Matching Screenshots)
@@ -496,13 +722,13 @@ struct MainView: View {
     }
 
     private func selectSound(_ sound: Sound) {
-        let isProActive = preferences.first?.isPro == true || StillwayTesting.unlockAllFeatures
-        if !sound.isFree && !isProActive {
-            activeSheet = .settings
+        if !sound.isFree && !isUserPro {
+            HapticEngine.tap()
+            activeSheet = .paywall
             return
         }
         theme.apply(soundID: sound.id, context: sound.context)
-        runtime.selectSound(sound, isPro: isProActive, preferences: preferences.first)
+        runtime.selectSound(sound, isPro: isUserPro, preferences: preferences.first)
         if !runtime.audio.isPlaying {
             runtime.handleStartStop(preferences: preferences.first)
         }
