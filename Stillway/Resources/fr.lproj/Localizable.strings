@@ -175,6 +175,17 @@
 "toast_demo_noise" = "Fichier audio manquant — tonalité de démo en cours.";
 "auto_banner" = "Session intelligente démarrée";
 
+"paywall_badge" = "ACCÈS À VIE • PRO";
+"paywall_hook_title" = "Trouvez le Calme dans le Mouvement";
+"paywall_hook_subtitle" = "Débloquez les 24 ambiances sonores spatiales, le double mixage, la détection des stations et l'automatisation du sommeil.";
+"paywall_cta_price" = "Débloquer l'Accès à Vie • %@";
+"paywall_guarantee" = "Achat unique • Sans abonnement • 100% sur l'appareil";
+"paywall_terms" = "Conditions d'Utilisation";
+"paywall_privacy" = "Politique de Confidentialité";
+"paywall_creator_note_title" = "UN MOT DU CRÉATEUR INDÉPENDANT";
+"paywall_creator_note_body" = "Stillway est conçu avec soin par un développeur indépendant aspirant à une vie paisible proche de la nature. Si ce sanctuaire apporte de la sérénité à vos journées, votre soutien unique à vie fait toute la différence et permet à Stillway de rester totalement indépendant et sans publicité.";
+
+
 // New Atmospheric Themes & Sounds
 "snd_neon_vapor" = "Fumée Néon Cyber";
 "snd_neon_vapor_sub" = "Panaches de vapeur néon bilatéraux et faisceaux lumineux zénithaux";

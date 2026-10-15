@@ -183,6 +183,9 @@
 "paywall_guarantee" = "買い切り型・サブスクなし・100%端末内プライベート";
 "paywall_terms" = "利用規約";
 "paywall_privacy" = "プライバシーポリシー";
+"paywall_creator_note_title" = "インディー開発者からのメッセージ";
+"paywall_creator_note_body" = "Stillwayは、自然と共に静かに暮らす夢を抱く個人のインディー開発者が心を込めて制作しました。日々の安らぎとなれば幸いです。あなたの生涯サポートが、完全独立・広告なしのアプリを支える大きな力になります。";
+
 
 
 // Weather Forecast Strings

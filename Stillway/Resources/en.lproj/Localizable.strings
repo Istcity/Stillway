@@ -183,6 +183,9 @@
 "paywall_guarantee" = "One-time purchase • Zero subscriptions • 100% on-device";
 "paywall_terms" = "Terms of Use";
 "paywall_privacy" = "Privacy Policy";
+"paywall_creator_note_title" = "A NOTE FROM THE INDIE CREATOR";
+"paywall_creator_note_body" = "Stillway is handcrafted with care by an indie creator working toward a quiet life close to nature. If this sanctuary brings peace to your days, your one-time lifetime support makes a world of difference and keeps Stillway completely independent and ad-free.";
+
 
 // Weather Forecast Strings
 "weather_clear" = "Clear";

@@ -94,6 +94,18 @@ final class LocalizationManager {
             return currentLanguage == .tr ? "Fırtına" : (currentLanguage == .ja ? "雷雨" : (currentLanguage == .fr ? "Orage" : "Thunderstorm"))
         case "weather_in_3h":
             return currentLanguage == .tr ? "+3s" : (currentLanguage == .ja ? "+3時間" : (currentLanguage == .fr ? "+3h" : "+3h"))
+        case "paywall_creator_note_title":
+            return currentLanguage == .tr ? "BAĞIMSIZ GELİŞTİRİCİDEN BİR NOT" : (currentLanguage == .ja ? "インディー開発者からのメッセージ" : (currentLanguage == .fr ? "UN MOT DU CRÉATEUR INDÉPENDANT" : "A NOTE FROM THE INDIE CREATOR"))
+        case "paywall_creator_note_body":
+            if currentLanguage == .tr {
+                return "Stillway, doğayla iç içe, bahçeli ve huzurlu bir yaşam hayali kuran bağımsız bir geliştirici tarafından sevgiyle hazırlandı. Eğer bu sığınak günlerinize dinginlik katıyorsa, tek seferlik ömür boyu desteğiniz benim için dünyalara bedel ve Stillway'in tamamen bağımsız ve reklamsız kalmasını sağlıyor."
+            } else if currentLanguage == .ja {
+                return "Stillwayは、自然と共に静かに暮らす夢を抱く個人のインディー開発者が心を込めて制作しました。日々の安らぎとなれば幸いです。あなたの生涯サポートが、完全独立・広告なしのアプリを支える大きな力になります。"
+            } else if currentLanguage == .fr {
+                return "Stillway est conçu avec soin par un développeur indépendant aspirant à une vie paisible proche de la nature. Si ce sanctuaire apporte de la sérénité à vos journées, votre soutien unique à vie fait toute la différence et permet à Stillway de rester totalement indépendant et sans publicité."
+            } else {
+                return "Stillway is handcrafted with care by an indie creator working toward a quiet life close to nature. If this sanctuary brings peace to your days, your one-time lifetime support makes a world of difference and keeps Stillway completely independent and ad-free."
+            }
         default:
             var cleaned = key
             for p in ["atmo_", "snd_", "ctx_", "settings_", "weather_"] {

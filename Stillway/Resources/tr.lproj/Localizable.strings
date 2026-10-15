@@ -183,6 +183,9 @@
 "paywall_guarantee" = "Tek seferlik ödeme • Aboneliksiz • %100 Cihaz İçi Gizlilik";
 "paywall_terms" = "Kullanım Şartları";
 "paywall_privacy" = "Gizlilik Politikası";
+"paywall_creator_note_title" = "BAĞIMSIZ GELİŞTİRİCİDEN BİR NOT";
+"paywall_creator_note_body" = "Stillway, doğayla iç içe, bahçeli ve huzurlu bir yaşam hayali kuran bağımsız bir geliştirici tarafından sevgiyle hazırlandı. Eğer bu sığınak günlerinize dinginlik katıyorsa, tek seferlik ömür boyu desteğiniz benim için dünyalara bedel ve Stillway'in tamamen bağımsız ve reklamsız kalmasını sağlıyor.";
+
 
 
 // Weather Forecast Strings

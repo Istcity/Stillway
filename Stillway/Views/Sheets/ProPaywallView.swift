@@ -123,6 +123,38 @@ struct ProPaywallView: View {
                     }
                     .padding(.horizontal, 22)
 
+                    // Indie Creator Note Card
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 7) {
+                            Image(systemName: "leaf.fill")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(Color(red: 0.95, green: 0.78, blue: 0.45))
+                            Text(lm.string("paywall_creator_note_title"))
+                                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                                .tracking(1.4)
+                                .foregroundStyle(Color(red: 0.95, green: 0.78, blue: 0.45))
+                        }
+
+                        Text(lm.string("paywall_creator_note_body"))
+                            .font(.system(size: 12.5, weight: .regular, design: .serif))
+                            .lineSpacing(4)
+                            .foregroundStyle(.white.opacity(0.85))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.white.opacity(0.04))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color(red: 0.95, green: 0.78, blue: 0.45).opacity(0.22), lineWidth: 1)
+                            )
+                    )
+                    .padding(.horizontal, 22)
+                    .padding(.top, 4)
+
                     // Call to Action Box
                     VStack(spacing: 12) {
                         Button {
