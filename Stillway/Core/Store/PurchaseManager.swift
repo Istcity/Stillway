@@ -137,3 +137,47 @@ public enum StillwayReviewPrompter {
         }
     }
 }
+
+// MARK: - Smart Polite Paywall Prompter (Arada sırada, çok sıkmadan)
+@MainActor
+enum StillwayPaywallPrompter {
+    private static let lastPromptTimestampKey = "stillway_last_paywall_prompt_timestamp"
+    private static let sessionCountKey = "stillway_sessions_since_last_paywall_prompt"
+    private static let totalCompletedSessionsKey = "stillway_completed_listening_sessions"
+
+    /// Evaluates whether to gently show the soft paywall without annoying the user.
+    static func evaluatePrompt(runtime: ContextEngine) {
+        // Never prompt if already Pro or in test bypass mode
+        let isPro = StillwayTesting.unlockAllFeatures || UserDefaults.standard.bool(forKey: "stillway.isPro.debug")
+        guard !isPro else { return }
+
+        let total = UserDefaults.standard.integer(forKey: totalCompletedSessionsKey) + 1
+        UserDefaults.standard.set(total, forKey: totalCompletedSessionsKey)
+
+        let sessionsSincePrompt = UserDefaults.standard.integer(forKey: sessionCountKey) + 1
+        UserDefaults.standard.set(sessionsSincePrompt, forKey: sessionCountKey)
+
+        // Rule 1: Never interrupt during the first 2 sessions (give user peace to enjoy free features)
+        guard total >= 3 else { return }
+
+        // Rule 2: Minimum 3 completed sessions between prompts
+        guard sessionsSincePrompt >= 3 else { return }
+
+        // Rule 3: Minimum 48 hours between prompts (çok sıkmadan)
+        let lastPromptTime = UserDefaults.standard.double(forKey: lastPromptTimestampKey)
+        let now = Date().timeIntervalSince1970
+        let minInterval: Double = 48 * 3600 // 48 hours
+
+        if lastPromptTime == 0 || (now - lastPromptTime) >= minInterval {
+            UserDefaults.standard.set(now, forKey: lastPromptTimestampKey)
+            UserDefaults.standard.set(0, forKey: sessionCountKey)
+
+            // Show after gentle 1.2s delay so it feels natural, only if not playing and no sheets open
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                if !runtime.audio.isPlaying && !runtime.showSettings && !runtime.showSounds {
+                    runtime.showPaywall = true
+                }
+            }
+        }
+    }
+}

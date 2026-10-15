@@ -211,13 +211,13 @@ struct ProPaywallView: View {
         let localizedPrice: String
         switch lm.currentLanguage {
         case .tr:
-            localizedPrice = "999 TL"
+            localizedPrice = "199 TL"
         case .ja:
-            localizedPrice = "¥3,000"
+            localizedPrice = "¥900"
         case .fr:
-            localizedPrice = "19,99 €"
+            localizedPrice = "5,99 €"
         default:
-            localizedPrice = "$19.99"
+            localizedPrice = "$5.99"
         }
 
         if let product = store.proProduct, !ProcessInfo.processInfo.arguments.contains("-forcePaywall") {

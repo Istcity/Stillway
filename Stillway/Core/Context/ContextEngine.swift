@@ -218,6 +218,7 @@ final class ContextEngine {
         breathing.stop()
         triggerType = .manual
         toast = localization.string("toast_stopped")
+        StillwayPaywallPrompter.evaluatePrompt(runtime: self)
     }
 
     func handleStartStop(preferences: UserPreferences?) {

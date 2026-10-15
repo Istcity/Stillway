@@ -250,14 +250,14 @@ CONFIGS = [
         "accent_rgb": (0, 230, 118),
         "title_size": 84,
         "meta_en": "STILLWAY EDITORIAL // VOL. 01 • SPATIAL SANCTUARY",
-        "meta_ja": "STILLWAY 創刊号 // 第01号 • 移動と静寂の聖域",
-        "meta_tr": "STILLWAY DERGİ // SAYI 01 • YOLCULUK SIĞINAĞI",
-        "title_en": "FIND STILLNESS\nIN MOTION",
-        "title_ja": "移動を、\n静寂の聖域へ。",
-        "title_tr": "HAREKETİN İÇİNDE\nDERİN SESSİZLİK",
-        "badge_en": "✦ 48kHz STEREO NEURO-ACOUSTIC",
-        "badge_ja": "★ 48kHz 立体音響 • 端末内生成",
-        "badge_tr": "✦ 48kHz ÇİFT KANALLI STEREO SES"
+        "meta_ja": "STILLWAY 創刊号 // 第01号 • 思考を鎮める静寂の聖域",
+        "meta_tr": "STILLWAY DERGİ // SAYI 01 • SESSİZLİK VE ODAKLANMA",
+        "title_en": "SLEEP FASTER.\nDEEP FOCUS.",
+        "title_ja": "思考を鎮め、\n至福の眠りへ。",
+        "title_tr": "DAHA HIZLI UYU.\nDERİN ODAKLAN.",
+        "badge_en": "✦ FREE DOWNLOAD • 12 FREE ATMOSPHERES",
+        "badge_ja": "★ 無料ダウンロード • 12音源無料",
+        "badge_tr": "✦ ÜCRETSİZ İNDİR • 12 ÜCRETSİZ AMBİYANS"
     },
     {
         "index": "02",

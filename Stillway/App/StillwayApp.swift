@@ -42,8 +42,8 @@ struct StillwayApp: App {
             prefs = UserPreferences()
             context.insert(prefs)
         }
-        // Stillway upfront paid app model: ensure user has pro access
-        prefs.isPro = true
+        // Stillway freemium model: respect purchase entitlements
+        prefs.isPro = purchaseManager.isPro || StillwayTesting.unlockAllFeatures
         StillwayMemory.apply(to: prefs)
         if let language = StillwayMemory.selectedLanguage {
             lm.currentLanguage = LanguageCode(rawValue: language) ?? .en

@@ -11,7 +11,7 @@ Bu belge, Stillway'in App Store Connect üzerinden yayınlanması için gerekli 
 | **Birincil Kategori (Primary Category)** | Health & Fitness (Sağlık ve Fitness) veya Lifestyle (Yaşam Tarzı) |
 | **İkincil Kategori (Secondary Category)** | Productivity (Verimlilik) veya Music (Müzik) |
 | **Yaş Derecelendirmesi (Age Rating)** | 4+ (Herhangi bir sakıncalı içerik, kumar veya yetişkin unsuru içermez) |
-| **Fiyatlandırma Modeli** | Peşin Satın Alma (Upfront Paid) veya Ücretsiz İndirme + Pro Açma |
+| **Fiyatlandırma Modeli** | **Ücretsiz İndirme (Free)** + Uygulama İçi Satın Alma (Stillway Pro Lifetime) |
 | **Telif Hakkı (Copyright)** | © 2026 Sinan Nergiz. All rights reserved. |
 | **Pazarlama URL (Marketing URL)** | `https://istcity.github.io/Stillway/` |
 | **Destek URL (Support URL)** | `https://istcity.github.io/Stillway/support.html` |
@@ -46,27 +46,27 @@ App Store Connect'te incelemeye gönderebilmek için sol menüden **App Privacy 
 
 ### App Name (Maksimum 30 Karakter)
 ```text
-Stillway: Neural Ambient Audio
-```
-*(Karakter sayısı: 30)*
-
-### Subtitle (Maksimum 30 Karakter)
-```text
-Focus, Sleep & Commute Sounds
+Stillway: White & Brown Noise
 ```
 *(Karakter sayısı: 29)*
 
+### Subtitle (Maksimum 30 Karakter)
+```text
+Rain Sounds, Sleep & Focus
+```
+*(Karakter sayısı: 26)*
+
 ### Keywords (Maksimum 100 Karakter, Virgülle ayrılmış, boşluksuz)
 ```text
-ambient,white noise,binaural,sleep sounds,focus,nature,rain,meditation,zen,relax,study,lofi,soundscape
+brown noise,white noise,rain sounds,sleep,binaural,deep focus,adhd,nature,relax,meditation,zen,lofi
 ```
 *(Karakter sayısı: 99)*
 
 ### Promotional Text (Maksimum 170 Karakter - İnceleme olmadan güncellenebilir)
 ```text
-Zero taps required. Stillway senses your environment and generates the perfect acoustic sanctuary for deep work, crowded commutes, and restorative sleep.
+Free download with 12 master atmospheres. Pure offline acoustic sanctuary for deep sleep, ADHD focus, and study flow. Zero ads, zero tracking.
 ```
-*(Karakter sayısı: 153)*
+*(Karakter sayısı: 143)*
 
 ### Description (Açıklama - Maksimum 4000 Karakter)
 ```text
@@ -127,27 +127,27 @@ Welcome to the debut release of Stillway!
 
 ### App Name (Maksimum 30 Karakter)
 ```text
-Stillway: Nöro-Akustik Ortam
-```
-*(Karakter sayısı: 28)*
-
-### Subtitle (Maksimum 30 Karakter)
-```text
-Odaklanma, Uyku ve Beyin Sesi
+Stillway: Beyaz Gürültü & Ses
 ```
 *(Karakter sayısı: 29)*
 
+### Subtitle (Maksimum 30 Karakter)
+```text
+Yağmur Sesi, Uyku ve Odak
+```
+*(Karakter sayısı: 25)*
+
 ### Keywords (Maksimum 100 Karakter, Virgülle ayrılmış, boşluksuz)
 ```text
-beyaz gürültü,uyku sesleri,odaklanma,meditasyon,yağmur sesi,binaural,rahatlatıcı,çalışma,stres,lofi,huzur
+beyaz gürültü,kahverengi gürültü,yağmur sesi,uyku sesleri,odaklanma,meditasyon,binaural,rahatlatıcı,lofi
 ```
 *(Karakter sayısı: 100)*
 
 ### Promotional Text (Maksimum 170 Karakter - İnceleme olmadan güncellenebilir)
 ```text
-Ekrana dokunmanıza gerek yok. Stillway nerede olduğunuzu anlar; odaklanma, metro yolculuğu ve derin uyku için ideal ortamı kendiliğinden oluşturur.
+12 ambiyans ile ücretsiz indir. Derin uyku, ders çalışma ve dikkat dağınıklığı için reklamsız, internet istemeyen nöro-akustik sığınak.
 ```
-*(Karakter sayısı: 147)*
+*(Karakter sayısı: 136)*
 
 ### Description (Açıklama - Maksimum 4000 Karakter)
 ```text
@@ -208,27 +208,27 @@ Stillway'in ilk sürümü yayında!
 
 ### App Name (Maksimum 30 Karakter)
 ```text
-Stillway: 環境音と集中・睡眠
+Stillway: 睡眠と集中・雨の音
 ```
-*(Karakter sayısı: 16)*
+*(Karakter sayısı: 21)*
 
 ### Subtitle (Maksimum 30 Karakter)
 ```text
-バイノーラル・集中・雨の音・睡眠
+ホワイトノイズ & 集中タイマー
 ```
-*(Karakter sayısı: 17)*
+*(Karakter sayısı: 19)*
 
 ### Keywords (Maksimum 100 Karakter, Virgülle ayrılmış, boşluksuz)
 ```text
-環境音,ホワイトノイズ,睡眠音,集中,バイノーラル,雨の音,瞑想,作業用bgm,自然音,快眠,リラックス,自律神経
+ホワイトノイズ,睡眠,集中,雨の音,バイノーラル,瞑想,自然音,快眠,作業用bgm,自律神経,リラックス,環境音
 ```
-*(Karakter sayısı: 61)*
+*(Karakter sayısı: 68)*
 
 ### Promotional Text (Maksimum 170 Karakter - İnceleme olmadan güncellenebilir)
 ```text
-画面操作は不要です。Stillwayは移動・集中・就寝を自動で認識し、今この瞬間に最適なアコースティック空間を創り出します。
+12種類の音源を無料でお試し。思考を鎮め、深い集中と心地よい眠りへ導く完全オフライン・広告ゼロの音響空間。
 ```
-*(Karakter sayısı: 65)*
+*(Karakter sayısı: 55)*
 
 ### Description (Açıklama - Maksimum 4000 Karakter)
 ```text

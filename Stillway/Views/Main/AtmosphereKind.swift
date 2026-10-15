@@ -115,4 +115,12 @@ enum AtmosphereKind: String, Codable, CaseIterable, Sendable {
             return lm.currentLanguage == .tr ? "Prizma Halesi" : (lm.currentLanguage == .ja ? "プリズムハロ" : (lm.currentLanguage == .fr ? "Halo Prismatique" : "Prism Halo"))
         }
     }
+
+    /// 1 Free Theme for freemium users, other 10 themes require Stillway Pro.
+    var isFree: Bool {
+        switch self {
+        case .aurora: return true
+        default: return false
+        }
+    }
 }

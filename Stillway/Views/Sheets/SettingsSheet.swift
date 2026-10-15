@@ -24,6 +24,10 @@ struct SettingsSheet: View {
 
     private var accent: Color { theme.gradient.accentColor }
 
+    private var isProActive: Bool {
+        store.isPro || StillwayTesting.unlockAllFeatures
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -120,20 +124,31 @@ struct SettingsSheet: View {
                                                 title: lm.string("atmo_auto"),
                                                 icon: "sparkles",
                                                 isSelected: theme.atmosphereOverride == nil,
-                                                accentColor: accent
+                                                accentColor: accent,
+                                                isLocked: false
                                             ) {
                                                 theme.atmosphereOverride = nil
                                             }
 
                                             ForEach(AtmosphereKind.allCases, id: \.self) { kind in
                                                 let isSelected = theme.atmosphereOverride == kind
+                                                let isLocked = !isProActive && !kind.isFree
                                                 atmospherePill(
                                                     title: kind.displayName(using: lm),
-                                                    icon: kind.symbol,
+                                                    icon: isLocked ? "lock.fill" : kind.symbol,
                                                     isSelected: isSelected,
-                                                    accentColor: accentForKind(kind)
+                                                    accentColor: accentForKind(kind),
+                                                    isLocked: isLocked
                                                 ) {
-                                                    theme.atmosphereOverride = kind
+                                                    if isLocked {
+                                                        HapticEngine.warning()
+                                                        dismiss()
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                                                            runtime.showPaywall = true
+                                                        }
+                                                    } else {
+                                                        theme.atmosphereOverride = kind
+                                                    }
                                                 }
                                             }
                                         }
@@ -556,6 +571,7 @@ struct SettingsSheet: View {
         icon: String,
         isSelected: Bool,
         accentColor: Color,
+        isLocked: Bool = false,
         action: @escaping () -> Void
     ) -> some View {
         Button {
@@ -564,9 +580,18 @@ struct SettingsSheet: View {
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: icon)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(isLocked ? Color.white.opacity(0.4) : (isSelected ? Color.black : Color.white.opacity(0.85)))
                 Text(title)
                     .font(.system(size: 12, weight: isSelected ? .bold : .medium, design: .rounded))
+                if isLocked {
+                    Text("PRO")
+                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 2)
+                        .background(Color.white.opacity(0.12), in: Capsule())
+                        .foregroundStyle(Color.white.opacity(0.75))
+                }
             }
             .foregroundStyle(isSelected ? .black : .white.opacity(0.85))
             .padding(.horizontal, 14)
